@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import json
 import os
+import urllib.request
 
 app = Flask(__name__)
 app.secret_key = 'my_super_secret_key'
@@ -11,35 +12,65 @@ if not os.path.exists(DB_FILE):
     with open(DB_FILE, 'w', encoding='utf-8') as f:
         json.dump([], f)
 
+def get_city_by_ip(ip):
+    # 如果是本地测试或者内网，直接返回本地
+    if ip in ('127.0.0.1', 'localhost', '::1'):
+        return '本地测试'
+    try:
+        # 使用免费的 ip-api 查询城市
+        url = f"http://ip-api.com/json/{ip}?lang=zh-CN"
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=2) as response:
+            data = json.loads(response.read().decode('utf-8'))
+            if data.get('status') == 'success':
+                country = data.get('country', '')
+                region = data.get('regionName', '')
+                city = data.get('city', '')
+                return f"{country} {region} {city}".strip()
+    except Exception:
+        pass
+    return "未知城市"
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    my_reply = None
     if request.method == 'POST':
         content = request.form.get('content')
         if content and content.strip():
+            # 获取访问者的真实 IP
+            if request.headers.get('CF-Connecting-IP'):
+                ip = request.headers.get('CF-Connecting-IP')
+            elif request.headers.get('X-Forwarded-For'):
+                ip = request.headers.get('X-Forwarded-For').split(',')[0].strip()
+            else:
+                ip = request.remote_addr
+
+            location = get_city_by_ip(ip)
+
             with open(DB_FILE, 'r', encoding='utf-8') as f:
                 messages = json.load(f)
-            # 每条留言分配一个唯一 ID 和空的回复
+            
             new_msg = {
                 "id": len(messages) + 1,
                 "content": content.strip(),
+                "ip": ip,
+                "location": location,
                 "reply": ""
             }
             messages.insert(0, new_msg)
             with open(DB_FILE, 'w', encoding='utf-8') as f:
                 json.dump(messages, f, ensure_ascii=False, indent=4)
-            return render_template('index.html', success=True)
-        return render_template('index.html', success=False)
+            
+            return render_template('index.html', success=True, my_reply=None)
+        return render_template('index.html', success=False, my_reply=None)
     
-    # 首页展示所有留言及博主的回复
-    with open(DB_FILE, 'r', encoding='utf-8') as f:
-        messages = json.load(f)
-    return render_template('index.html', messages=messages, success=False)
+    return render_template('index.html', success=False, my_reply=None)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         password = request.form.get('password')
-        if password == '123456': # 你的后台密码
+        if password == '123456':
             session['logged_in'] = True
             return redirect(url_for('admin'))
     return '''
