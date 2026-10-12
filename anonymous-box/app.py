@@ -13,11 +13,9 @@ if not os.path.exists(DB_FILE):
         json.dump([], f)
 
 def get_city_by_ip(ip):
-    # 如果是本地测试或者内网，直接返回本地
     if ip in ('127.0.0.1', 'localhost', '::1'):
         return '本地测试'
     try:
-        # 使用免费的 ip-api 查询城市
         url = f"http://ip-api.com/json/{ip}?lang=zh-CN"
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
         with urllib.request.urlopen(req, timeout=2) as response:
@@ -33,11 +31,11 @@ def get_city_by_ip(ip):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    my_reply = None
+    user_msg = None
+    success = False
     if request.method == 'POST':
         content = request.form.get('content')
         if content and content.strip():
-            # 获取访问者的真实 IP
             if request.headers.get('CF-Connecting-IP'):
                 ip = request.headers.get('CF-Connecting-IP')
             elif request.headers.get('X-Forwarded-For'):
@@ -61,10 +59,10 @@ def index():
             with open(DB_FILE, 'w', encoding='utf-8') as f:
                 json.dump(messages, f, ensure_ascii=False, indent=4)
             
-            return render_template('index.html', success=True, my_reply=None)
-        return render_template('index.html', success=False, my_reply=None)
-    
-    return render_template('index.html', success=False, my_reply=None)
+            success = True
+            user_msg = new_msg
+            
+    return render_template('index.html', success=success, user_msg=user_msg)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -97,7 +95,7 @@ def admin():
         msg_id = int(request.form.get('msg_id'))
         reply_content = request.form.get('reply', '').strip()
         for msg in messages:
-            if msg.get('id') == msg_id:
+            if msg.get('id'] == msg_id:
                 msg['reply'] = reply_content
                 break
         with open(DB_FILE, 'w', encoding='utf-8') as f:
