@@ -2,19 +2,40 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>我的树洞后台</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理后台 - 树洞信箱</title>
     <style>
-        body { font-family: sans-serif; background: #f4f6f9; padding: 20px; max-width: 600px; margin: auto; }
-        .msg-card { background: white; padding: 16px 20px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); font-size: 15px; color: #2c3e50; word-break: break-all; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #1e293b; padding: 20px; max-width: 650px; margin: auto; }
+        h2 { color: #0f172a; }
+        .msg-card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+        .msg-content { font-size: 15px; color: #1e293b; margin-bottom: 12px; word-break: break-all; font-weight: 500; }
+        textarea { width: 100%; height: 70px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 13px; outline: none; resize: none; margin-bottom: 8px; }
+        textarea:focus { border-color: #6366f1; }
+        button { background: #6366f1; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: 500; }
+        button:hover { background: #4f46e5; }
+        .existing-reply { background: #f1f5f9; padding: 8px 12px; border-radius: 6px; font-size: 13px; color: #475569; margin-bottom: 8px; }
     </style>
 </head>
 <body>
-    <h2>📥 收到的小秘密（共 {{ messages | length }} 条）</h2>
-    <hr style="border: none; border-top: 1px solid #ddd; margin-bottom: 20px;">
+    <h2>📥 收到的小秘密后台（共 {{ messages | length }} 条）</h2>
+    <hr style="border: none; border-top: 1px solid #e2e8f0; margin-bottom: 20px;">
+    
     {% for msg in messages %}
-        <div class="msg-card">{{ msg.content }}</div>
+    <div class="msg-card">
+        <div class="msg-content">📩 <b>留言内容：</b>{{ msg.content }}</div>
+        
+        {% if msg.reply %}
+        <div class="existing-reply">当前回复：{{ msg.reply }}</div>
+        {% endif %}
+
+        <form method="POST">
+            <input type="hidden" name="msg_id" value="{{ msg.id }}">
+            <textarea name="reply" placeholder="输入你想回复的内容..."></textarea>
+            <button type="submit">提交回复</button>
+        </form>
+    </div>
     {% else %}
-        <p style="color: #999; text-align: center; margin-top: 50px;">暂时还没有收到任何留言哦~</p>
+    <p style="color: #94a3b8; text-align: center; margin-top: 50px;">暂时还没有收到任何留言哦~</p>
     {% endfor %}
 </body>
 </html>
