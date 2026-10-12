@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>菠萝世界 - 匿名提问箱</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #1e293b; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #1e293b; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; box-sizing: border-box; }
         .container { width: 100%; max-width: 500px; }
-        .card { background: white; padding: 28px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); box-sizing: border-box; text-align: center; }
+        .card { background: white; padding: 28px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); box-sizing: border-box; text-align: center; margin-bottom: 16px; }
         h2 { margin-top: 0; color: #0f172a; font-size: 22px; }
         p { color: #64748b; font-size: 14px; line-height: 1.5; margin-bottom: 20px; }
         textarea { width: 100%; height: 120px; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; resize: none; box-sizing: border-box; font-size: 14px; outline: none; transition: border-color 0.2s; }
         textarea:focus { border-color: #6366f1; }
         button { background: #6366f1; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; margin-top: 15px; font-size: 15px; cursor: pointer; font-weight: 600; transition: background 0.2s; }
         button:hover { background: #4f46e5; }
-        .success { background: #dcfce7; color: #166534; padding: 12px; border-radius: 10px; margin-top: 15px; font-size: 14px; font-weight: 500; }
+        .success { background: #dcfce7; color: #166534; padding: 12px; border-radius: 10px; margin-top: 15px; font-size: 14px; font-weight: 500; text-align: left; }
+        .reply-box { background: #eff6ff; border-left: 3px solid #3b82f6; padding: 12px; border-radius: 8px; margin-top: 12px; font-size: 14px; color: #1e40af; text-align: left; }
     </style>
 </head>
 <body>
@@ -27,7 +28,10 @@
                 <button type="submit">匿名发送</button>
             </form>
             {% if success %}
-            <div class="success">✨ 发送成功！你的秘密已经悄悄传达给菠萝啦~</div>
+            <div class="success">
+                ✨ <b>发送成功！</b>你的秘密已经传达给菠萝啦~
+                <div style="margin-top: 8px; color: #475569; font-size: 13px;">你的留言：{{ user_msg.content }}</div>
+            </div>
             {% endif %}
         </div>
     </div>
