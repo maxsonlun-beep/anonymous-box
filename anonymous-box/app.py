@@ -38,8 +38,6 @@ def index():
     new_token = ""
     if request.method == 'POST':
         content = request.form.get('content')
-        client_token = request.form.get('client_token')
-        
         if content and content.strip():
             if request.headers.get('CF-Connecting-IP'):
                 ip = request.headers.get('CF-Connecting-IP')
@@ -50,56 +48,47 @@ def index():
 
             location = get_city_by_ip(ip)
             
-            # 如果客户端没有 token，生成一个新的
-            if not client_token or client_token == "undefined" or client_token == "":
-                client_token = uuid.uuid4().hex[:12]
+            # 每次发送都生成一个全新的独立 token
+            token = uuid.uuid4().hex[:12]
 
-            existing_msg = None
-            for msg in messages:
-                if msg.get('token') == client_token:
-                    existing_msg = msg
-                    break
-            
-            if existing_msg:
-                existing_msg['content'] = content.strip()
-                existing_msg['ip'] = ip
-                existing_msg['location'] = location
-            else:
-                new_msg = {
-                    "id": len(messages) + 1,
-                    "token": client_token,
-                    "content": content.strip(),
-                    "ip": ip,
-                    "location": location,
-                    "reply": ""
-                }
-                messages.insert(0, new_msg)
+            new_msg = {
+                "id": len(messages) + 1,
+                "token": token,
+                "content": content.strip(),
+                "ip": ip,
+                "location": location,
+                "reply": ""
+            }
+            messages.insert(0, new_msg)
 
             with open(DB_FILE, 'w', encoding='utf-8') as f:
                 json.dump(messages, f, ensure_ascii=False, indent=4)
             
-            new_token = client_token
+            new_token = token
 
-    return render_template('index.html', token=new_token)
+    return render_template('index.html', new_token=new_token)
 
-@app.route('/check_status', methods=['POST'])
-def check_status():
+@app.route('/check_history', methods=['POST'])
+def check_history():
     data = request.get_json() or {}
-    token = data.get('token')
-    if not token:
-        return jsonify({"has_msg": False})
+    tokens = data.get('tokens', []) # 接收前端传过来的一组 token 列表
+    if not tokens:
+        return jsonify({"history": []})
         
     with open(DB_FILE, 'r', encoding='utf-8') as f:
         messages = json.load(f)
         
-    for msg in messages:
-        if msg.get('token') == token:
-            return jsonify({
-                "has_msg": True,
-                "content": msg.get('content'),
-                "reply": msg.get('reply', '')
-            })
-    return jsonify({"has_msg": False})
+    user_history = []
+    for t in tokens:
+        for msg in messages:
+            if msg.get('token') == t:
+                user_history.append({
+                    "content": msg.get('content'),
+                    "reply": msg.get('reply', '')
+                })
+                break
+                
+    return jsonify({"history": user_history})
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
