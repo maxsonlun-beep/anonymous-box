@@ -1,11 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for, session, make_response
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import json
 import os
 import urllib.request
 import uuid
 
 app = Flask(__name__)
-app.secret_key = 'my_super_secret_key_pineapple'
+app.secret_key = 'my_secret_key_pineapple'
 
 DB_FILE = 'messages.json'
 
@@ -35,9 +35,10 @@ def index():
     with open(DB_FILE, 'r', encoding='utf-8') as f:
         messages = json.load(f)
 
+    new_token = ""
     if request.method == 'POST':
         content = request.form.get('content')
-        client_token = request.form.get('client_token') # 获取浏览器自带的标识
+        client_token = request.form.get('client_token')
         
         if content and content.strip():
             if request.headers.get('CF-Connecting-IP'):
@@ -49,11 +50,10 @@ def index():
 
             location = get_city_by_ip(ip)
             
-            # 如果客户端没有 token，帮她生成一个
-            if not client_token:
+            # 如果客户端没有 token，生成一个新的
+            if not client_token or client_token == "undefined" or client_token == "":
                 client_token = uuid.uuid4().hex[:12]
 
-            # 检查数据库里是否已经有这个 token 的留言
             existing_msg = None
             for msg in messages:
                 if msg.get('token') == client_token:
@@ -61,12 +61,10 @@ def index():
                     break
             
             if existing_msg:
-                # 如果她已经留过言了，这次提交视为“追加或更新留言内容”
                 existing_msg['content'] = content.strip()
                 existing_msg['ip'] = ip
                 existing_msg['location'] = location
             else:
-                # 全新留言
                 new_msg = {
                     "id": len(messages) + 1,
                     "token": client_token,
@@ -80,32 +78,28 @@ def index():
             with open(DB_FILE, 'w', encoding='utf-8') as f:
                 json.dump(messages, f, ensure_ascii=False, indent=4)
             
-            # 渲染页面，把 token 带回给前端存入浏览器
-            return render_template('index.html', my_msg=existing_msg or new_msg, just_sent=True, token=client_token)
+            new_token = client_token
 
-    # 属于 GET 请求（打开网页或刷新）
-    # 我们可以通过前端传过来的 cookie 或参数识别，这里在 index.html 里用前端 JS 自动结合后端同步
-    return render_template('index.html', my_msg=None, just_sent=False, token="")
+    return render_template('index.html', token=new_token)
 
 @app.route('/check_status', methods=['POST'])
 def check_status():
-    # 供前端 JS 异步查询自己有没有收到回复
     data = request.get_json() or {}
     token = data.get('token')
     if not token:
-        return {"has_msg": False}
+        return jsonify({"has_msg": False})
         
     with open(DB_FILE, 'r', encoding='utf-8') as f:
         messages = json.load(f)
         
     for msg in messages:
         if msg.get('token') == token:
-            return {
+            return jsonify({
                 "has_msg": True,
                 "content": msg.get('content'),
                 "reply": msg.get('reply', '')
-            }
-    return {"has_msg": False}
+            })
+    return jsonify({"has_msg": False})
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
