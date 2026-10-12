@@ -5,35 +5,109 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>菠萝世界 - 匿名提问箱</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #1e293b; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; box-sizing: border-box; }
-        .container { width: 100%; max-width: 500px; }
-        .card { background: white; padding: 28px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); box-sizing: border-box; text-align: center; margin-bottom: 16px; }
-        h2 { margin-top: 0; color: #0f172a; font-size: 22px; }
-        p { color: #64748b; font-size: 14px; line-height: 1.5; margin-bottom: 20px; }
-        textarea { width: 100%; height: 120px; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; resize: none; box-sizing: border-box; font-size: 14px; outline: none; transition: border-color 0.2s; }
-        textarea:focus { border-color: #6366f1; }
-        button { background: #6366f1; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; margin-top: 15px; font-size: 15px; cursor: pointer; font-weight: 600; transition: background 0.2s; }
-        button:hover { background: #4f46e5; }
-        .success { background: #dcfce7; color: #166534; padding: 12px; border-radius: 10px; margin-top: 15px; font-size: 14px; font-weight: 500; text-align: left; }
-        .reply-box { background: #eff6ff; border-left: 3px solid #3b82f6; padding: 12px; border-radius: 8px; margin-top: 12px; font-size: 14px; color: #1e40af; text-align: left; }
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #f3e8ff 0%, #e0e7ff 50%, #f0fdf4 100%);
+            color: #1e293b; margin: 0; padding: 20px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh;
+        }
+        .container { width: 100%; max-width: 480px; }
+        .card {
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px);
+            padding: 32px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.6); text-align: center;
+        }
+        .avatar { font-size: 44px; margin-bottom: 10px; }
+        h2 { margin: 0 0 8px 0; color: #0f172a; font-size: 24px; font-weight: 700; }
+        p { color: #64748b; font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
+        textarea {
+            width: 100%; height: 120px; padding: 14px; border: 1.5px solid #e2e8f0; border-radius: 14px;
+            resize: none; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.9);
+            transition: all 0.2s ease; color: #1e293b;
+        }
+        textarea:focus { border-color: #6366f1; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); background: #fff; }
+        button {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none;
+            padding: 14px; border-radius: 14px; width: 100%; margin-top: 16px; font-size: 15px; cursor: pointer; font-weight: 600;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); transition: all 0.2s ease;
+        }
+        button:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4); }
+        
+        /* 微信对话样式的气泡框 */
+        .chat-container { text-align: left; margin-top: 15px; }
+        .my-msg-bubble {
+            background: #e0e7ff; color: #1e3a8a; padding: 12px 16px; border-radius: 14px 14px 2px 14px;
+            font-size: 14px; margin-bottom: 12px; word-break: break-all;
+        }
+        .reply-bubble {
+            background: #ffffff; color: #0f172a; padding: 14px 16px; border-radius: 14px 14px 14px 2px;
+            font-size: 14px; border-left: 4px solid #6366f1; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            word-break: break-all; line-height: 1.5;
+        }
+        .status-text { font-size: 13px; color: #64748b; text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="card">
-            <h2>🍍 欢迎来到菠萝世界</h2>
-            <p>这里可以畅所欲言，有什么想聊的尽管写下来吧~</p>
-            <form method="POST">
-                <textarea name="content" placeholder="写下你的真实想法..." required></textarea>
-                <button type="submit">匿名发送</button>
+            <div class="avatar">🍍</div>
+            <h2>菠萝世界</h2>
+            <p>这里可以畅所欲言，有什么悄悄话或者问题，尽管写下来传达给我吧~</p>
+            
+            <form method="POST" id="msgForm">
+                <input type="hidden" name="client_token" id="clientTokenInput">
+                <textarea name="content" id="contentBox" placeholder="写下你的真实想法..." required></textarea>
+                <button type="submit" id="submitBtn">匿名发送</button>
             </form>
-            {% if success %}
-            <div class="success">
-                ✨ <b>发送成功！</b>你的秘密已经传达给菠萝啦~
-                <div style="margin-top: 8px; color: #475569; font-size: 13px;">你的留言：{{ user_msg.content }}</div>
+
+            <div id="chatArea" style="display: none;" class="chat-container">
+                <div style="font-size: 12px; color: #94a3b8; margin-bottom: 4px;">你的留言：</div>
+                <div class="my-msg-bubble" id="displayMyMsg"></div>
+
+                <div style="font-size: 12px; color: #6366f1; margin-bottom: 4px; font-weight: bold;">🍍 菠萝的回复：</div>
+                <div id="displayReplyArea">
+                    <div class="status-text">⏳ 正在等待菠萝回复中，下次打开自动同步...</div>
+                </div>
             </div>
-            {% endif %}
         </div>
     </div>
+
+    <script>
+        // 1. 自动从浏览器本地缓存（LocalStorage）读取用户的专属暗号
+        let token = localStorage.getItem('pineapple_token');
+        
+        // 如果后端刚处理完提交，把新的 token 存起来
+        {% if token %}
+            token = "{{ token }}";
+            localStorage.setItem('pineapple_token', token);
+        {% endif %}
+
+        if (token) {
+            document.getElementById('clientTokenInput').value = token;
+            
+            // 每次打开网页，自动向后端异步查询这条暗号的最新状态（像微信拉取聊天记录一样）
+            fetch('/check_status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: token })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.has_msg) {
+                    // 显示对话气泡区域
+                    document.getElementById('chatArea').style.display = 'block';
+                    document.getElementById('displayMyMsg').innerText = data.content;
+                    
+                    const replyArea = document.getElementById('displayReplyArea');
+                    if (data.reply && data.reply.trim() !== '') {
+                        replyArea.innerHTML = `<div class="reply-bubble">${data.reply}</div>`;
+                    } else {
+                        replyArea.innerHTML = `<div class="status-text">⏳ 已经送达，正在等待菠萝回复中...</div>`;
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 </html>
