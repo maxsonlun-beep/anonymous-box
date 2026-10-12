@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>匿名提问箱</title>
+    <style>
+        body { font-family: sans-serif; background: #f7f9fc; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 6px 20px rgba(0,0,0,0.08); width: 100%; max-width: 400px; text-align: center; box-sizing: border-box; }
+        textarea { width: 100%; height: 130px; padding: 12px; border: 1px solid #e1e8ed; border-radius: 10px; resize: none; box-sizing: border-box; font-size: 14px; margin-top: 10px; }
+        button { background: #007bff; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; margin-top: 15px; font-size: 16px; cursor: pointer; font-weight: bold; }
+        .success { color: #28a745; margin-top: 12px; font-size: 14px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>💌 匿名提问箱</h2>
+        <p style="color: #666; font-size: 14px;">有什么想对我说又不好意思当面说的话？畅所欲言吧！</p>
+        <form method="POST">
+            <textarea name="content" placeholder="写下你的真实想法..." required></textarea>
+            <button type="submit">匿名发送</button>
+        </form>
+        {% if success %}
+            <p class="success">✨ 发送成功！谢谢你的真心话~</p>
+        {% endif %}
+    </div>
+</body>
+</html>

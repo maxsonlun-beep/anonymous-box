@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>我的树洞后台</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f6f9; padding: 20px; max-width: 600px; margin: auto; }
+        .msg-card { background: white; padding: 16px 20px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); font-size: 15px; color: #2c3e50; word-break: break-all; }
+    </style>
+</head>
+<body>
+    <h2>📥 收到的小秘密（共 {{ messages | length }} 条）</h2>
+    <hr style="border: none; border-top: 1px solid #ddd; margin-bottom: 20px;">
+    {% for msg in messages %}
+        <div class="msg-card">{{ msg.content }}</div>
+    {% else %}
+        <p style="color: #999; text-align: center; margin-top: 50px;">暂时还没有收到任何留言哦~</p>
+    {% endfor %}
+</body>
+</html>
