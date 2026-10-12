@@ -22,30 +22,24 @@
         h2 { margin: 0 0 8px 0; color: #0f172a; font-size: 24px; font-weight: 700; }
         p { color: #64748b; font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
         textarea {
-            width: 100%; height: 120px; padding: 14px; border: 1.5px solid #e2e8f0; border-radius: 14px;
+            width: 100%; height: 110px; padding: 14px; border: 1.5px solid #e2e8f0; border-radius: 14px;
             resize: none; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.9);
             transition: all 0.2s ease; color: #1e293b;
         }
         textarea:focus { border-color: #6366f1; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); background: #fff; }
         button {
             background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none;
-            padding: 14px; border-radius: 14px; width: 100%; margin-top: 16px; font-size: 15px; cursor: pointer; font-weight: 600;
+            padding: 14px; border-radius: 14px; width: 100%; margin-top: 14px; font-size: 15px; cursor: pointer; font-weight: 600;
             box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); transition: all 0.2s ease;
         }
         button:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4); }
         
-        /* 微信对话样式的气泡框 */
-        .chat-container { text-align: left; margin-top: 15px; }
-        .my-msg-bubble {
-            background: #e0e7ff; color: #1e3a8a; padding: 12px 16px; border-radius: 14px 14px 2px 14px;
-            font-size: 14px; margin-bottom: 12px; word-break: break-all;
-        }
-        .reply-bubble {
-            background: #ffffff; color: #0f172a; padding: 14px 16px; border-radius: 14px 14px 14px 2px;
-            font-size: 14px; border-left: 4px solid #6366f1; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            word-break: break-all; line-height: 1.5;
-        }
-        .status-text { font-size: 13px; color: #64748b; text-align: center; margin-top: 10px; }
+        /* 聊天历史气泡区 */
+        .chat-history { text-align: left; margin-top: 24px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+        .chat-item { margin-bottom: 16px; background: #f8fafc; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .my-msg { background: #e0e7ff; color: #1e3a8a; padding: 10px 12px; border-radius: 10px; font-size: 13px; word-break: break-all; margin-bottom: 8px; }
+        .reply-msg { background: #ffffff; color: #0f172a; padding: 10px 12px; border-radius: 10px; font-size: 13px; border-left: 3px solid #6366f1; word-break: break-all; line-height: 1.4; }
+        .waiting-text { font-size: 12px; color: #64748b; font-style: italic; }
     </style>
 </head>
 <body>
@@ -55,56 +49,55 @@
             <h2>菠萝世界</h2>
             <p>这里可以畅所欲言，有什么悄悄话或者问题，尽管写下来传达给我吧~</p>
             
-            <form method="POST" id="msgForm">
-                <input type="hidden" name="client_token" id="clientTokenInput">
-                <textarea name="content" id="contentBox" placeholder="写下你的真实想法..." required></textarea>
-                <button type="submit" id="submitBtn">匿名发送</button>
+            <form method="POST">
+                <textarea name="content" placeholder="写下你的真实想法..." required></textarea>
+                <button type="submit">匿名发送新消息</button>
             </form>
 
-            <div id="chatArea" style="display: none;" class="chat-container">
-                <div style="font-size: 12px; color: #94a3b8; margin-bottom: 4px;">你的留言：</div>
-                <div class="my-msg-bubble" id="displayMyMsg"></div>
-
-                <div style="font-size: 12px; color: #6366f1; margin-bottom: 4px; font-weight: bold;">🍍 菠萝的回复：</div>
-                <div id="displayReplyArea">
-                    <div class="status-text">⏳ 正在等待菠萝回复中，下次打开自动同步...</div>
-                </div>
+            <!-- 历史对话记录展示区 -->
+            <div id="chatHistoryArea" class="chat-history" style="display: none;">
+                <div style="font-size: 13px; font-weight: bold; color: #334155; margin-bottom: 12px;">💬 你的历史对话记录</div>
+                <div id="historyList"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // 1. 自动从浏览器本地缓存（LocalStorage）读取用户的专属暗号
-        let token = localStorage.getItem('pineapple_token');
-        
-        // 如果后端刚处理完提交，把新的 token 存起来
-        {% if token %}
-            token = "{{ token }}";
-            localStorage.setItem('pineapple_token', token);
+        // 从 localStorage 读取保存的所有 token 列表
+        let tokens = JSON.parse(localStorage.getItem('pineapple_tokens') || '[]');
+
+        // 如果后端刚成功提交了一条新消息，把返回的新 token 压入数组并存回缓存
+        {% if new_token %}
+            let newToken = "{{ new_token }}";
+            if (!tokens.includes(newToken)) {
+                tokens.push(newToken);
+                localStorage.setItem('pineapple_tokens', JSON.stringify(tokens));
+            }
         {% endif %}
 
-        if (token) {
-            document.getElementById('clientTokenInput').value = token;
-            
-            // 每次打开网页，自动向后端异步查询这条暗号的最新状态（像微信拉取聊天记录一样）
-            fetch('/check_status', {
+        // 如果本地有记录，异步向服务器请求这些消息的内容和回复
+        if (tokens.length > 0) {
+            fetch('/check_history', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: token })
+                body: JSON.stringify({ tokens: tokens })
             })
             .then(res => res.json())
             .then(data => {
-                if (data.has_msg) {
-                    // 显示对话气泡区域
-                    document.getElementById('chatArea').style.display = 'block';
-                    document.getElementById('displayMyMsg').innerText = data.content;
-                    
-                    const replyArea = document.getElementById('displayReplyArea');
-                    if (data.reply && data.reply.trim() !== '') {
-                        replyArea.innerHTML = `<div class="reply-bubble">${data.reply}</div>`;
-                    } else {
-                        replyArea.innerHTML = `<div class="status-text">⏳ 已经送达，正在等待菠萝回复中...</div>`;
-                    }
+                if (data.history && data.history.length > 0) {
+                    document.getElementById('chatHistoryArea').style.display = 'block';
+                    let html = '';
+                    data.history.forEach(item => {
+                        html += `<div class="chat-item">
+                            <div class="my-msg"><b>你：</b>${item.content}</div>`;
+                        if (item.reply && item.reply.trim() !== '') {
+                            html += `<div class="reply-msg"><b>🍍 菠萝回复：</b>${item.reply}</div>`;
+                        } else {
+                            html += `<div class="waiting-text">⏳ 正在等待菠萝回复...</div>`;
+                        }
+                        html += `</div>`;
+                    });
+                    document.getElementById('historyList').innerHTML = html;
                 }
             });
         }
