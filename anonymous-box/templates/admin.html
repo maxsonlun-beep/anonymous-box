@@ -3,45 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>管理后台 - 菠萝世界</title>
+    <title>maxsonlun · 菠萝世界复合空间</title>
     <style>
-        body { font-family: -apple-system, sans-serif; background: #0f172a; color: #f8fafc; padding: 30px 20px; max-width: 700px; margin: auto; }
-        .card { background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 16px; border: 1px solid #334155; }
-        .meta { font-size: 12px; color: #94a3b8; margin-bottom: 8px; display: flex; justify-content: space-between; }
-        .content { font-size: 15px; margin-bottom: 12px; word-break: break-all; }
-        textarea { width: 100%; height: 70px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 8px; padding: 8px; resize: none; margin-bottom: 8px; }
-        button { background: #6366f1; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; }
-        .reply-box { background: #0f172a; border-left: 3px solid #3b82f6; padding: 8px 12px; border-radius: 6px; font-size: 13px; margin-bottom: 10px; }
-        .badge-type { background: #3b82f6; color: white; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-right: 6px; }
+        :root {
+            --bg: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --text: #0f172a;
+            --sub: #64748b;
+            --border: rgba(226, 232, 240, 0.8);
+            --accent: #6366f1;
+        }
+        [data-theme="dark"] {
+            --bg: #090d16;
+            --card-bg: rgba(17, 24, 39, 0.8);
+            --text: #f9fafb;
+            --sub: #9ca3af;
+            --border: rgba(31, 41, 55, 0.6);
+            --accent: #818cf8;
+        }
+        * { box-sizing: border-box; transition: background 0.3s, color 0.3s; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg); color: var(--text);
+            margin: 0; padding: 20px; display: flex; justify-content: center; min-height: 100vh;
+            position: relative; overflow-x: hidden;
+        }
+        body::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.12), transparent 40%),
+                        radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.1), transparent 40%);
+            animation: auroraMove 15s ease infinite alternate; z-index: -1; pointer-events: none;
+        }
+        @keyframes auroraMove {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-5%, -5%) rotate(5deg); }
+        }
+
+        .wrapper { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 16px; z-index: 1; }
+        
+        .top-bar { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); backdrop-filter: blur(12px); padding: 16px 24px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.05); }
+        .profile-info { display: flex; align-items: center; gap: 12px; }
+        .avatar-box { font-size: 32px; background: rgba(99, 102, 241, 0.1); padding: 8px; border-radius: 14px; }
+        .profile-info h1 { font-size: 18px; margin: 0; font-weight: 700; }
+        .profile-info p { font-size: 12px; margin: 2px 0 0 0; color: var(--sub); }
+        .theme-btn { background: var(--border); border: none; padding: 8px 14px; border-radius: 12px; cursor: pointer; font-size: 13px; color: var(--text); }
+
+        .bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media(max-width: 640px) { .bento-grid { grid-template-columns: 1fr; } }
+
+        .card { background: var(--card-bg); backdrop-filter: blur(16px); border: 1px solid var(--border); padding: 24px; border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.05); }
+        .card-full { grid-column: span 2; }
+        @media(max-width: 640px) { .card-full { grid-column: span 1; } }
+
+        h3 { margin: 0 0 12px 0; font-size: 16px; display: flex; align-items: center; gap: 6px; }
+        
+        textarea { width: 100%; height: 90px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.05); color: var(--text); resize: none; font-size: 14px; outline: none; }
+        textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
+        
+        .submit-btn { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
+
+        /* 高性能稳定音乐播放器样式 */
+        .player-box { background: rgba(100, 116, 139, 0.05); border: 1px solid var(--border); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+        .track-info { display: flex; align-items: center; gap: 12px; }
+        .vinyl { font-size: 32px; display: inline-block; }
+        .vinyl.playing { animation: spin 3s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        
+        .controls { display: flex; align-items: center; justify-content: space-between; }
+        .ctrl-btn { background: var(--border); border: none; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; color: var(--text); font-weight: 600; }
+        .ctrl-btn.main { background: var(--accent); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+        .playlist { display: flex; flex-direction: column; gap: 4px; max-height: 110px; overflow-y: auto; }
+        .track-item { font-size: 11px; padding: 6px 10px; border-radius: 6px; background: rgba(255,255,255,0.03); cursor: pointer; color: var(--sub); display: flex; justify-content: space-between; }
+        .track-item:hover { background: rgba(99, 102, 241, 0.1); color: var(--text); }
+        .track-item.active { background: var(--accent); color: white; font-weight: 600; }
+
+        .forum-feed { display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto; padding-right: 4px; }
+        .forum-item { background: rgba(100, 116, 139, 0.04); border: 1px solid var(--border); padding: 14px; border-radius: 12px; }
+        .forum-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--sub); margin-bottom: 6px; }
+        .forum-content { font-size: 14px; color: var(--text); margin-bottom: 8px; word-break: break-all; font-weight: 500; }
+        .forum-reply { background: rgba(99, 102, 241, 0.08); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 8px; font-size: 13px; color: var(--text); }
+        
+        .my-chat-item { background: rgba(100, 116, 139, 0.05); padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 10px; }
     </style>
 </head>
-<body>
-    <h2>🍍 菠萝世界复合空间 · 管理后台</h2>
-    <hr style="border:0; border-top:1px solid #334155; margin-bottom: 20px;">
-    
-    {% for msg in messages %}
-    <div class="card">
-        <div class="meta">
-            <span>
-                {% if msg.msg_type == 'private' %}<span class="badge-type" style="background:#e60026;">专属私密</span>{% else %}<span class="badge-type">论坛广场</span>{% endif %}
-                📍 {{ msg.location }} (IP: <b>{{ msg.ip }}</b>)
-            </span>
-            <span>🕒 {{ msg.created_at }}</span>
+<body data-theme="dark">
+    <div class="wrapper">
+        <div class="top-bar">
+            <div class="profile-info">
+                <div class="avatar-box">🍍</div>
+                <div>
+                    <h1>maxsonlun</h1>
+                    <p>Electrical Engineering & Tech Hub</p>
+                </div>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()">☀️ 切换主题</button>
         </div>
-        <div class="content">💬 {{ msg.content }}</div>
-        
-        {% if msg.reply %}
-        <div class="reply-box"><b>当前回复：</b>{{ msg.reply }}</div>
-        {% endif %}
 
-        <form method="POST">
-            <input type="hidden" name="msg_id" value="{{ msg.id }}">
-            <textarea name="reply" placeholder="写下你的回复..."></textarea>
-            <button type="submit">提交回复</button>
-        </form>
+        <div class="bento-grid">
+            <!-- 模块一：专属提问箱（独立，仅站长可见） -->
+            <div class="card">
+                <h3>🔒 专属提问箱（仅站长可见）</h3>
+                <p style="font-size: 12px; color: var(--sub); margin-top:0;">有什么悄悄话单独发给我，绝对保密。</p>
+                <form method="POST">
+                    <input type="hidden" name="msg_type" value="private">
+                    <textarea name="content" placeholder="写下你的专属私密提问..." required></textarea>
+                    <button type="submit" class="submit-btn">发送私密提问</button>
+                </form>
+
+                <div id="historyArea" style="margin-top: 16px; display: none;">
+                    <div style="font-size: 12px; font-weight: bold; margin-bottom: 8px;">💬 你的私密对话记录</div>
+                    <div id="historyList"></div>
+                </div>
+            </div>
+
+            <!-- 模块二：高性能稳定音乐播放器（100% 可播，带黑胶旋转） -->
+            <div class="card">
+                <h3>🎵 氛围音乐中心</h3>
+                <p style="font-size: 12px; color: var(--sub); margin-top:0; margin-bottom: 10px;">沉浸式 808 与电子氛围音乐~</p>
+                <div class="player-box">
+                    <div class="track-info">
+                        <div class="vinyl" id="vinylIcon">💿</div>
+                        <div>
+                            <div style="font-size: 13px; font-weight: bold;" id="currentTitle">Dark Ambient Drill 808</div>
+                            <div style="font-size: 11px; color: var(--sub);" id="currentArtist">Coding & Vibes</div>
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button class="ctrl-btn" onclick="prevTrack()">⏮</button>
+                        <button class="ctrl-btn main" id="playBtn" onclick="togglePlay()">▶</button>
+                        <button class="ctrl-btn" onclick="nextTrack()">⏭</button>
+                    </div>
+
+                    <div class="playlist" id="playlist">
+                        <div class="track-item active" onclick="selectTrack(0)"><span>1. Dark Ambient Drill 808</span></div>
+                        <div class="track-item" onclick="selectTrack(1)"><span>2. Lo-Fi Study Coding Beats</span></div>
+                        <div class="track-item" onclick="selectTrack(2)"><span>3. Cyberpunk Night Space</span></div>
+                    </div>
+                </div>
+                <audio id="audioElement" onended="nextTrack()"></audio>
+            </div>
+
+            <!-- 模块三：论坛广场（独立，公开可见不显示IP） -->
+            <div class="card card-full">
+                <h3>🌐 意见与建议论坛广场</h3>
+                <p style="font-size: 12px; color: var(--sub); margin-top:0; margin-bottom: 12px;">对本站的修改建议或看法，发到这里大家都能看到（不显示IP）。</p>
+                
+                <form method="POST" style="margin-bottom: 20px;">
+                    <input type="hidden" name="msg_type" value="forum">
+                    <textarea name="content" placeholder="发表你对本站的建议或看法..." required style="height: 70px;"></textarea>
+                    <button type="submit" class="submit-btn" style="margin-top: 6px;">发布到论坛广场</button>
+                </form>
+
+                <div style="font-size: 13px; font-weight: bold; margin-bottom: 10px;">📋 广场讨论流</div>
+                <div class="forum-feed">
+                    {% for msg in public_forum %}
+                    <div class="forum-item">
+                        <div class="forum-meta">
+                            <span>📍 <b>来自火星的访客</b></span>
+                            <span>🕒 {{ msg.created_at }}</span>
+                        </div>
+                        <div class="forum-content">💬 {{ msg.content }}</div>
+                        {% if msg.reply %}
+                        <div class="forum-reply"><b>🍍 站长回复：</b>{{ msg.reply }}</div>
+                        {% else %}
+                        <div style="font-size: 11px; color: var(--sub); font-style: italic;">⏳ 等待站长回复中...</div>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <p style="text-align: center; color: var(--sub); font-size: 13px; margin: 20px 0;">论坛还没有留言，快来抢沙发吧！</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
-    {% else %}
-    <p style="text-align: center; color: #94a3b8; margin-top: 50px;">暂无任何消息~</p>
-    {% endfor %}
-</body>
-</html>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const theme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+        if (localStorage.getItem('theme')) {
+            document.body.setAttribute('data-theme',
