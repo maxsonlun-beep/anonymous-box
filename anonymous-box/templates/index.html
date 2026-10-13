@@ -109,14 +109,16 @@
                 </div>
             </div>
 
-            <!-- 模块二：APlayer 高级音乐播放器 -->
+            <!-- 模块二：网易云官方热歌榜播放器（聚焦全球与华语火爆热单） -->
             <div class="card">
                 <h3>🎵 音乐中心</h3>
-                <p style="font-size: 12px; color: var(--sub); margin-top:0; margin-bottom: 10px;">聚合多平台曲库，尽情畅听~</p>
+                <p style="font-size: 12px; color: var(--sub); margin-top:0; margin-bottom: 10px;">全网火爆热单，随心畅听~</p>
+                
+                <!-- 切换为网易云官方全球/流行热歌榜 ID：19723756 -->
                 <meting-js
                     server="netease"
                     type="playlist"
-                    id="60198"
+                    id="19723756"
                     fixed="false"
                     mini="false"
                     autoplay="false"
@@ -127,10 +129,10 @@
                 </meting-js>
             </div>
 
-            <!-- 模块三：论坛广场（独立，公开可见不显示IP） -->
+            <!-- 模块三：论坛广场（独立，公开可见，已去除突兀的提示文字） -->
             <div class="card card-full">
                 <h3>🌐 意见与建议论坛广场</h3>
-                <p style="font-size: 12px; color: var(--sub); margin-top:0; margin-bottom: 12px;">对本站的修改建议或看法，发到这里大家都能看到（不显示IP）。</p>
+                <p style="font-size: 12px; color: var(--sub); margin-top:0; margin-bottom: 12px;">对本站的修改建议或看法，发到这里大家都能看到。</p>
                 
                 <form method="POST" style="margin-bottom: 20px;">
                     <input type="hidden" name="msg_type" value="forum">
