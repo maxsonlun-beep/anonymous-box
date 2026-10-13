@@ -11,7 +11,7 @@
             --text: #0f172a;
             --sub: #64748b;
             --border: rgba(226, 232, 240, 0.8);
-            --accent: #1db954;
+            --accent: #c20c0c; /* 网易云红 */
         }
         [data-theme="dark"] {
             --bg: #090d16;
@@ -19,7 +19,7 @@
             --text: #f9fafb;
             --sub: #9ca3af;
             --border: rgba(31, 41, 55, 0.6);
-            --accent: #1ed760;
+            --accent: #e60026;
         }
         * { box-sizing: border-box; transition: background 0.3s, color 0.3s; }
         
@@ -31,8 +31,8 @@
         }
         body::before {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle at 20% 30%, rgba(30, 215, 96, 0.1), transparent 40%),
-                        radial-gradient(circle at 80% 70%, rgba(99, 102, 241, 0.12), transparent 40%);
+            background: radial-gradient(circle at 20% 30%, rgba(230, 0, 38, 0.1), transparent 40%),
+                        radial-gradient(circle at 80% 70%, rgba(99, 102, 241, 0.1), transparent 40%);
             animation: auroraMove 15s ease infinite alternate; z-index: -1; pointer-events: none;
         }
         @keyframes auroraMove {
@@ -44,7 +44,7 @@
         
         .top-bar { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); backdrop-filter: blur(12px); padding: 16px 24px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.05); }
         .profile-info { display: flex; align-items: center; gap: 12px; }
-        .avatar-box { font-size: 32px; background: rgba(30, 215, 96, 0.1); padding: 8px; border-radius: 14px; }
+        .avatar-box { font-size: 32px; background: rgba(230, 0, 38, 0.1); padding: 8px; border-radius: 14px; }
         .profile-info h1 { font-size: 18px; margin: 0; font-weight: 700; }
         .profile-info p { font-size: 12px; margin: 2px 0 0 0; color: var(--sub); }
         .theme-btn { background: var(--border); border: none; padding: 8px 14px; border-radius: 12px; cursor: pointer; font-size: 13px; color: var(--text); }
@@ -58,36 +58,22 @@
 
         h3 { margin: 0 0 12px 0; font-size: 16px; display: flex; align-items: center; gap: 6px; }
         
-        .tags { display: flex; gap: 6px; margin-bottom: 12px; }
-        .tag-pill { background: rgba(100, 116, 139, 0.1); border: none; padding: 4px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; color: var(--sub); }
-        .tag-pill.active { background: var(--accent); color: white; }
-        
-        .checkbox-label { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--sub); margin: 8px 0 12px 0; cursor: pointer; }
-        
         textarea { width: 100%; height: 90px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.05); color: var(--text); resize: none; font-size: 14px; outline: none; }
-        textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(30, 215, 96, 0.2); }
-        .submit-btn { background: linear-gradient(135deg, #1ed760 0%, #1db954 100%); color: #000; border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 6px; box-shadow: 0 4px 12px rgba(30, 215, 96, 0.3); }
+        textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(230, 0, 38, 0.2); }
+        
+        .submit-btn { background: linear-gradient(135deg, #e60026 0%, #c20c0c 100%); color: white; border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 12px rgba(230, 0, 38, 0.3); }
 
-        /* 论坛广场讨论流 */
+        /* 网易云播放器容器 */
+        .netease-container { width: 100%; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: #000; }
+
+        /* 论坛意见流 */
         .forum-feed { display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto; padding-right: 4px; }
         .forum-item { background: rgba(100, 116, 139, 0.04); border: 1px solid var(--border); padding: 14px; border-radius: 12px; }
         .forum-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--sub); margin-bottom: 6px; }
         .forum-content { font-size: 14px; color: var(--text); margin-bottom: 8px; word-break: break-all; font-weight: 500; }
-        .forum-reply { background: rgba(30, 215, 96, 0.08); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 8px; font-size: 13px; color: var(--text); }
+        .forum-reply { background: rgba(230, 0, 38, 0.08); border-left: 3px solid var(--accent); padding: 8px 12px; border-radius: 8px; font-size: 13px; color: var(--text); }
         
-        /* Spotify 播放器精简版 */
-        .spotify-player { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-        .track-display { display: flex; align-items: center; gap: 12px; }
-        .album-art { width: 48px; height: 48px; border-radius: 10px; background: #222; display: flex; align-items: center; justify-content: center; font-size: 22px; position: relative; }
-        .album-art.playing::after { content: ''; position: absolute; inset: 0; border: 2px solid var(--accent); border-radius: 10px; }
-        .track-meta h4 { margin: 0; font-size: 13px; font-weight: 700; }
-        .track-meta p { margin: 2px 0 0 0; font-size: 11px; color: var(--sub); }
-        .player-controls { display: flex; justify-content: center; align-items: center; gap: 14px; }
-        .p-btn { background: none; border: none; color: var(--text); font-size: 14px; cursor: pointer; }
-        .p-btn.play-main { background: var(--accent); color: #000; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        .spotify-playlist { display: flex; flex-direction: column; gap: 4px; max-height: 90px; overflow-y: auto; }
-        .s-item { padding: 6px 10px; border-radius: 6px; background: rgba(255,255,255,0.02); font-size: 11px; cursor: pointer; color: var(--sub); display: flex; justify-content: space-between; }
-        .s-item.active { background: rgba(30,215,96,0.15); color: var(--accent); font-weight: 600; }
+        .my-chat-item { background: rgba(100, 116, 139, 0.05); padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 10px; }
     </style>
 </head>
 <body data-theme="dark">
@@ -107,62 +93,50 @@
         <!-- Bento 复合网格 -->
         <div class="bento-grid">
             
-            <!-- 板块一：互动提问箱与建议投递 -->
+            <!-- 模块一：专属提问箱（独立输入框，仅站长可见） -->
             <div class="card">
-                <h3>💌 意见箱与树洞留言</h3>
-                <p style="font-size: 12px; color: var(--sub); margin-top:0;">畅所欲言，给我们提建议或对站长的看法！</p>
+                <h3>🔒 专属提问箱（仅站长可见）</h3>
+                <p style="font-size: 12px; color: var(--sub); margin-top:0;">有什么悄悄话单独发给我，绝对保密，留言后可在下方自动同步我的回复。</p>
                 <form method="POST">
-                    <div class="tags">
-                        <button type="button" class="tag-pill active" onclick="setTag('建议', this)">💡 建议</button>
-                        <button type="button" class="tag-pill" onclick="setTag('看法', this)">👀 看法</button>
-                        <button type="button" class="tag-pill" onclick="setTag('日常', this)">📌 日常</button>
-                    </div>
-                    <input type="hidden" name="tag" id="tagInput" value="建议">
-                    <textarea name="content" placeholder="写下你的想法或建议..." required></textarea>
-                    
-                    <label class="checkbox-label">
-                        <input type="checkbox" name="is_public" checked> 公开展示到下方论坛广场（取消勾选则转为仅站长可见的私密消息）
-                    </label>
-
-                    <button type="submit" class="submit-btn">发布留言/建议</button>
+                    <input type="hidden" name="msg_type" value="private">
+                    <textarea name="content" placeholder="写下你的专属私密提问..." required></textarea>
+                    <button type="submit" class="submit-btn">发送私密提问</button>
                 </form>
-            </div>
 
-            <!-- 板块二：Spotify 音乐中心 -->
-            <div class="card">
-                <h3>🎵 音乐中心</h3>
-                <div class="spotify-player">
-                    <div class="track-display">
-                        <div class="album-art" id="albumArt">🎧</div>
-                        <div class="track-meta">
-                            <h4 id="trackTitle">Dark Ambient Drill 808</h4>
-                            <p id="trackArtist">Coding & Vibes</p>
-                        </div>
-                    </div>
-                    <div class="player-controls">
-                        <button class="p-btn" onclick="prevTrack()">⏮</button>
-                        <button class="p-btn play-main" id="playBtn" onclick="togglePlay()">▶</button>
-                        <button class="p-btn" onclick="nextTrack()">⏭</button>
-                    </div>
-                    <div class="spotify-playlist" id="playlist">
-                        <div class="s-item active" onclick="selectTrack(0)"><span>1. Dark Ambient Drill</span></div>
-                        <div class="s-item" onclick="selectTrack(1)"><span>2. Lo-Fi Study Beats</span></div>
-                        <div class="s-item" onclick="selectTrack(2)"><span>3. Cyberpunk Night Chill</span></div>
-                    </div>
+                <!-- 专属历史对话同步区 -->
+                <div id="historyArea" style="margin-top: 16px; display: none;">
+                    <div style="font-size: 12px; font-weight: bold; margin-bottom: 8px;">💬 你的私密对话记录</div>
+                    <div id="historyList"></div>
                 </div>
-                <audio id="audioElement" onended="nextTrack()"></audio>
             </div>
 
-            <!-- 板块三：公开论坛与建议广场（全宽展示） -->
+            <!-- 模块二：网易云音乐外链播放器（海量曲库，自由搜歌播放） -->
+            <div class="card">
+                <h3>🎵 网易云音乐中心</h3>
+                <p style="font-size: 12px; color: var(--sub); margin-top:0; margin-bottom: 10px;">嵌入网易云官方曲库，尽情畅听海量音乐~</p>
+                <div class="netease-container">
+                    <!-- 网易云官方精选歌单/单曲外链播放器 -->
+                    <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="100%" height="110" src="//music.163.com/outchain/player?type=2&id=1446731777&auto=0&height=90"></iframe>
+                </div>
+            </div>
+
+            <!-- 模块三：独立论坛广场（独立输入框，公开可见但不显示IP） -->
             <div class="card card-full">
-                <h3>🌐 公开讨论与建议广场（所有人可见）</h3>
-                <p style="font-size: 12px; color: var(--sub); margin-top:0; margin-bottom: 14px;">这里汇集了大家对本站的建议、对站长的看法以及回复内容。</p>
+                <h3>🌐 意见与建议论坛广场</h3>
+                <p style="font-size: 12px; color: var(--sub); margin-top:0; margin-bottom: 12px;">对本站的修改建议或看法，发到这里大家都能看到（不显示IP）。</p>
                 
+                <form method="POST" style="margin-bottom: 20px;">
+                    <input type="hidden" name="msg_type" value="forum">
+                    <textarea name="content" placeholder="发表你对本站的建议或看法..." required style="height: 70px;"></textarea>
+                    <button type="submit" class="submit-btn" style="margin-top: 6px;">发布到论坛广场</button>
+                </form>
+
+                <div style="font-size: 13px; font-weight: bold; margin-bottom: 10px;">📋 广场讨论流</div>
                 <div class="forum-feed">
-                    {% for msg in public_messages %}
+                    {% for msg in public_forum %}
                     <div class="forum-item">
                         <div class="forum-meta">
-                            <span>🏷️ <b>[{{ msg.tag }}]</b> · 📍 {{ msg.location }}</span>
+                            <span>📍 <b>来自火星的访客</b></span>
                             <span>🕒 {{ msg.created_at }}</span>
                         </div>
                         <div class="forum-content">💬 {{ msg.content }}</div>
@@ -173,7 +147,7 @@
                         {% endif %}
                     </div>
                     {% else %}
-                    <p style="text-align: center; color: var(--sub); font-size: 13px; margin: 20px 0;">还没有公开留言，快来抢沙发发表你的看法吧！</p>
+                    <p style="text-align: center; color: var(--sub); font-size: 13px; margin: 20px 0;">论坛还没有留言，快来抢沙发吧！</p>
                     {% endfor %}
                 </div>
             </div>
@@ -182,12 +156,6 @@
     </div>
 
     <script>
-        function setTag(t, btn) {
-            document.querySelectorAll('.tag-pill').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('tagInput').value = t;
-        }
-
         function toggleTheme() {
             const body = document.body;
             const theme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
@@ -198,72 +166,41 @@
             document.body.setAttribute('data-theme', localStorage.getItem('theme'));
         }
 
-        // 音乐播放器逻辑
-        const playlist = [
-            { title: "Dark Ambient Drill 808", artist: "Coding & Vibes", src: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf7f6.mp3?filename=lofi-study-112191.mp3", emoji: "🔥" },
-            { title: "Lo-Fi Study Beats", artist: "Relax & Focus", src: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=chill-abstract-intention-12099.mp3", emoji: "☕" },
-            { title: "Cyberpunk Night Chill", artist: "Electronic Space", src: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=science-fiction-10498.mp3", emoji: "🌃" }
-        ];
-
-        let currentIndex = 0;
-        const audio = document.getElementById('audioElement');
-        const playBtn = document.getElementById('playBtn');
-        const trackTitle = document.getElementById('trackTitle');
-        const trackArtist = document.getElementById('trackArtist');
-        const albumArt = document.getElementById('albumArt');
-        let isPlaying = false;
-
-        function loadTrack(index) {
-            currentIndex = index;
-            const track = playlist[index];
-            audio.src = track.src;
-            trackTitle.innerText = track.title;
-            trackArtist.innerText = track.artist;
-            albumArt.innerText = track.emoji;
-            document.querySelectorAll('.s-item').forEach((item, i) => {
-                if (i === index) item.classList.add('active');
-                else item.classList.remove('active');
-            });
-        }
-
-        function togglePlay() {
-            if (!audio.src) loadTrack(currentIndex);
-            if (isPlaying) {
-                audio.pause();
-                playBtn.innerText = "▶";
-                albumArt.classList.remove('playing');
-                isPlaying = false;
-            } else {
-                audio.play().then(() => {
-                    playBtn.innerText = "❚❚";
-                    albumArt.classList.add('playing');
-                    isPlaying = true;
-                }).catch(() => {
-                    alert("请点击选择你想播放的音乐~");
-                });
+        // 专属提问历史自动同步
+        let tokens = JSON.parse(localStorage.getItem('pineapple_tokens') || '[]');
+        {% if new_token %}
+            let nt = "{{ new_token }}";
+            if (!tokens.includes(nt)) {
+                tokens.push(nt);
+                localStorage.setItem('pineapple_tokens', JSON.stringify(tokens));
             }
-        }
+        {% endif %}
 
-        function selectTrack(index) {
-            loadTrack(index);
-            audio.play().then(() => {
-                playBtn.innerText = "❚❚";
-                albumArt.classList.add('playing');
-                isPlaying = true;
+        if (tokens.length > 0) {
+            fetch('/check_history', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tokens: tokens })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.history && data.history.length > 0) {
+                    document.getElementById('historyArea').style.display = 'block';
+                    let h = '';
+                    data.history.forEach(item => {
+                        h += `<div class="my-chat-item">
+                            <div style="font-size: 13px; margin-bottom: 4px;"><b>你：</b>${item.content}</div>`;
+                        if (item.reply && item.reply.trim() !== '') {
+                            h += `<div style="font-size: 13px; color: var(--accent); border-left: 3px solid var(--accent); padding-left: 8px;"><b>站长回复：</b>${item.reply}</div>`;
+                        } else {
+                            h += `<div style="font-size: 11px; color: var(--sub); font-style: italic;">⏳ 等待站长私密回复中...</div>`;
+                        }
+                        h += `</div>`;
+                    });
+                    document.getElementById('historyList').innerHTML = h;
+                }
             });
         }
-
-        function nextTrack() {
-            currentIndex = (currentIndex + 1) % playlist.length;
-            selectTrack(currentIndex);
-        }
-
-        function prevTrack() {
-            currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
-            selectTrack(currentIndex);
-        }
-
-        loadTrack(0);
     </script>
 </body>
 </html>
