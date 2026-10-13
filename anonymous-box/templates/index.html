@@ -11,35 +11,29 @@
             --text: #0f172a;
             --sub: #64748b;
             --border: rgba(226, 232, 240, 0.8);
-            --accent: #6366f1;
+            --accent: #1db954; /* Spotify 经典绿 */
         }
         [data-theme="dark"] {
             --bg: #090d16;
-            --card-bg: rgba(17, 24, 39, 0.75);
+            --card-bg: rgba(17, 24, 39, 0.8);
             --text: #f9fafb;
             --sub: #9ca3af;
             --border: rgba(31, 41, 55, 0.6);
-            --accent: #818cf8;
+            --accent: #1ed760;
         }
         * { box-sizing: border-box; transition: background 0.3s, color 0.3s; }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            background-color: var(--bg); color: var(--text);
             margin: 0; padding: 20px; display: flex; justify-content: center; min-height: 100vh;
             position: relative; overflow-x: hidden;
         }
         body::before {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.15), transparent 40%),
-                        radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.1), transparent 40%),
-                        radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.1), transparent 50%);
-            animation: auroraMove 15s ease infinite alternate;
-            z-index: -1;
-            pointer-events: none;
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle at 20% 30%, rgba(30, 215, 96, 0.1), transparent 40%),
+                        radial-gradient(circle at 80% 70%, rgba(99, 102, 241, 0.12), transparent 40%);
+            animation: auroraMove 15s ease infinite alternate; z-index: -1; pointer-events: none;
         }
         @keyframes auroraMove {
             0% { transform: translate(0, 0) rotate(0deg); }
@@ -50,7 +44,7 @@
         
         .top-bar { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); backdrop-filter: blur(12px); padding: 16px 24px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.05); }
         .profile-info { display: flex; align-items: center; gap: 12px; }
-        .avatar-box { font-size: 32px; background: rgba(99, 102, 241, 0.1); padding: 8px; border-radius: 14px; }
+        .avatar-box { font-size: 32px; background: rgba(30, 215, 96, 0.1); padding: 8px; border-radius: 14px; }
         .profile-info h1 { font-size: 18px; margin: 0; font-weight: 700; }
         .profile-info p { font-size: 12px; margin: 2px 0 0 0; color: var(--sub); }
         .theme-btn { background: var(--border); border: none; padding: 8px 14px; border-radius: 12px; cursor: pointer; font-size: 13px; color: var(--text); }
@@ -68,29 +62,38 @@
         .tag-pill { background: rgba(100, 116, 139, 0.1); border: none; padding: 4px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; color: var(--sub); }
         .tag-pill.active { background: var(--accent); color: white; }
         textarea { width: 100%; height: 100px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.05); color: var(--text); resize: none; font-size: 14px; outline: none; }
-        textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
-        .submit-btn { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
+        textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(30, 215, 96, 0.2); }
+        .submit-btn { background: linear-gradient(135deg, #1ed760 0%, #1db954 100%); color: #000; border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 12px rgba(30, 215, 96, 0.3); }
 
         .status-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,197,94,0.1); color: #22c55e; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 10px; }
         .dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        /* Spotify 风格高配播放器样式 */
+        .spotify-player { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+        .track-display { display: flex; align-items: center; gap: 14px; }
+        .album-art { width: 56px; height: 56px; border-radius: 10px; background: #222; display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
+        .album-art.playing::after { content: ''; position: absolute; inset: 0; border: 2px solid var(--accent); border-radius: 10px; animation: glow 1.5s infinite alternate; }
+        @keyframes glow { 0% { opacity: 0.4; } 100% { opacity: 1; } }
         
-        /* 进阶多功能音乐播放器 */
-        .player-box { background: rgba(100, 116, 139, 0.05); padding: 14px; border-radius: 14px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
-        .player-info { display: flex; align-items: center; gap: 12px; }
-        .vinyl { font-size: 32px; display: inline-block; }
-        .vinyl.playing { animation: spin 3s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        
-        .controls { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
-        .ctrl-btn { background: var(--border); border: none; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; color: var(--text); font-weight: 600; }
-        .ctrl-btn.main { background: var(--accent); color: white; }
-        
-        /* 音乐选择列表 */
-        .playlist { display: flex; flex-direction: column; gap: 4px; max-height: 100px; overflow-y: auto; margin-top: 4px; }
-        .track-item { font-size: 11px; padding: 6px 10px; border-radius: 6px; background: rgba(255,255,255,0.03); cursor: pointer; color: var(--sub); display: flex; justify-content: space-between; }
-        .track-item:hover { background: rgba(99,102,241,0.1); color: var(--text); }
-        .track-item.active { background: var(--accent); color: white; font-weight: 600; }
+        .track-meta h4 { margin: 0; font-size: 14px; font-weight: 700; color: var(--text); }
+        .track-meta p { margin: 4px 0 0 0; font-size: 12px; color: var(--sub); }
+
+        /* 进度条样式 */
+        .progress-container { display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--sub); }
+        .progress-bar { flex: 1; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; cursor: pointer; position: relative; overflow: hidden; }
+        .progress-filled { height: 100%; width: 0%; background: var(--accent); border-radius: 3px; }
+
+        /* 控制按钮 */
+        .player-controls { display: flex; justify-content: center; align-items: center; gap: 18px; }
+        .p-btn { background: none; border: none; color: var(--text); font-size: 16px; cursor: pointer; padding: 6px; }
+        .p-btn.play-main { background: var(--accent); color: #000; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; box-shadow: 0 4px 12px rgba(30,215,96,0.4); }
+
+        /* 选歌列表 */
+        .spotify-playlist { display: flex; flex-direction: column; gap: 6px; max-height: 120px; overflow-y: auto; padding-right: 4px; }
+        .s-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-radius: 8px; background: rgba(255,255,255,0.02); font-size: 12px; cursor: pointer; color: var(--sub); }
+        .s-item:hover { background: rgba(30,215,96,0.1); color: var(--text); }
+        .s-item.active { background: rgba(30,215,96,0.15); color: var(--accent); font-weight: 600; border-left: 3px solid var(--accent); }
 
         .chat-item { background: rgba(100, 116, 139, 0.05); padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 10px; }
         .my-text { font-size: 13px; color: var(--text); margin-bottom: 6px; }
@@ -142,34 +145,42 @@
                 <p style="font-size: 13px; color: var(--sub);">主修电气工程与自动化。热爱硬件电路、嵌入式与全栈开发。</p>
             </div>
 
-            <!-- 板块三：自由选歌多功能音乐播放器 -->
+            <!-- 板块三：Spotify 风格高配音乐中心 -->
             <div class="card">
-                <h3>🎵 氛围音乐中心</h3>
-                <div class="player-box">
-                    <div class="player-info">
-                        <div class="vinyl" id="vinylIcon">💿</div>
-                        <div>
-                            <div style="font-size: 13px; font-weight: bold;" id="currentTitle">Dark Ambient Drill 808</div>
-                            <div style="font-size: 11px; color: var(--sub);" id="currentArtist">Coding & Vibes</div>
+                <h3>🎵 Spotify 风格音乐中心</h3>
+                <div class="spotify-player">
+                    <div class="track-display">
+                        <div class="album-art" id="albumArt">🎧</div>
+                        <div class="track-meta">
+                            <h4 id="trackTitle">Dark Ambient Drill 808</h4>
+                            <p id="trackArtist">Coding & Vibes</p>
                         </div>
                     </div>
-                    
-                    <div class="controls">
-                        <button class="ctrl-btn" onclick="prevTrack()">⏮ 上一首</button>
-                        <button class="ctrl-btn main" id="playBtn" onclick="togglePlay()">▶ 播放</button>
-                        <button class="ctrl-btn" onclick="nextTrack()">下一首 ⏭</button>
+
+                    <!-- 进度条 -->
+                    <div class="progress-container">
+                        <span id="currentTime">0:00</span>
+                        <div class="progress-bar" id="progressBar" onclick="seekAudio(event)">
+                            <div class="progress-filled" id="progressFilled"></div>
+                        </div>
+                        <span id="duration">0:00</span>
                     </div>
 
-                    <!-- 自由选择播放列表 -->
-                    <div class="playlist" id="playlist">
-                        <div class="track-item active" onclick="selectTrack(0)">1. Dark Ambient Drill 808</div>
-                        <div class="track-item" onclick="selectTrack(1)">2. Lo-Fi Study Coding Beats</div>
-                        <div class="track-item" onclick="selectTrack(2)">3. Cyberpunk Night Chill</div>
+                    <!-- 按钮控制区 -->
+                    <div class="player-controls">
+                        <button class="p-btn" onclick="prevTrack()">⏮</button>
+                        <button class="p-btn play-main" id="playBtn" onclick="togglePlay()">▶</button>
+                        <button class="p-btn" onclick="nextTrack()">⏭</button>
+                    </div>
+
+                    <!-- 播放列表 -->
+                    <div class="spotify-playlist" id="playlist">
+                        <div class="s-item active" onclick="selectTrack(0)"><span>1. Dark Ambient Drill</span><span>3:20</span></div>
+                        <div class="s-item" onclick="selectTrack(1)"><span>2. Lo-Fi Study Beats</span><span>2:45</span></div>
+                        <div class="s-item" onclick="selectTrack(2)"><span>3. Cyberpunk Night Chill</span><span>3:10</span></div>
                     </div>
                 </div>
-                
-                <!-- 音频源定义 -->
-                <audio id="audioPlayer"></audio>
+                <audio id="audioElement" ontimesupdate="updateProgress()" onended="nextTrack()"></audio>
             </div>
 
         </div>
@@ -192,75 +203,97 @@
             document.body.setAttribute('data-theme', localStorage.getItem('theme'));
         }
 
-        // 音乐播放器逻辑
-        const tracks = [
-            { title: "Dark Ambient Drill 808", artist: "Coding & Vibes", src: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf7f6.mp3?filename=lofi-study-112191.mp3" },
-            { title: "Lo-Fi Study Coding Beats", artist: "Relax & Focus", src: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=chill-abstract-intention-12099.mp3" },
-            { title: "Cyberpunk Night Chill", artist: "Electronic Space", src: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=science-fiction-10498.mp3" }
+        // Spotify 播放器高级逻辑
+        const playlist = [
+            { title: "Dark Ambient Drill 808", artist: "Coding & Vibes", src: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf7f6.mp3?filename=lofi-study-112191.mp3", emoji: "🔥" },
+            { title: "Lo-Fi Study Beats", artist: "Relax & Focus", src: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=chill-abstract-intention-12099.mp3", emoji: "☕" },
+            { title: "Cyberpunk Night Chill", artist: "Electronic Space", src: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=science-fiction-10498.mp3", emoji: "🌃" }
         ];
 
-        let currentIdx = 0;
-        const audio = document.getElementById('audioPlayer');
+        let currentIndex = 0;
+        const audio = document.getElementById('audioElement');
         const playBtn = document.getElementById('playBtn');
-        const vinylIcon = document.getElementById('vinylIcon');
-        const currentTitle = document.getElementById('currentTitle');
-        const currentArtist = document.getElementById('currentArtist');
+        const trackTitle = document.getElementById('trackTitle');
+        const trackArtist = document.getElementById('trackArtist');
+        const albumArt = document.getElementById('albumArt');
+        const progressFilled = document.getElementById('progressFilled');
+        const currentTimeEl = document.getElementById('currentTime');
+        const durationEl = document.getElementById('duration');
         let isPlaying = false;
 
-        function loadTrack(idx) {
-            currentIdx = idx;
-            audio.src = tracks[idx].src;
-            currentTitle.innerText = tracks[idx].title;
-            currentArtist.innerText = tracks[idx].artist;
-            
-            // 更新歌单高亮
-            const items = document.querySelectorAll('.track-item');
-            items.forEach((item, i) => {
-                if(i === idx) item.classList.add('active');
+        function loadTrack(index) {
+            currentIndex = index;
+            const track = playlist[index];
+            audio.src = track.src;
+            trackTitle.innerText = track.title;
+            trackArtist.innerText = track.artist;
+            albumArt.innerText = track.emoji;
+
+            document.querySelectorAll('.s-item').forEach((item, i) => {
+                if (i === index) item.classList.add('active');
                 else item.classList.remove('active');
             });
         }
 
         function togglePlay() {
-            if (!audio.src) {
-                loadTrack(currentIdx);
-            }
+            if (!audio.src) loadTrack(currentIndex);
             if (isPlaying) {
                 audio.pause();
-                playBtn.innerText = "▶ 播放";
-                vinylIcon.classList.remove('playing');
+                playBtn.innerText = "▶";
+                albumArt.classList.remove('playing');
                 isPlaying = false;
             } else {
                 audio.play().then(() => {
-                    playBtn.innerText = "⏸ 暂停";
-                    vinylIcon.classList.add('playing');
+                    playBtn.innerText = "❚❚";
+                    albumArt.classList.add('playing');
                     isPlaying = true;
-                }).catch(e => {
+                }).catch(() => {
                     alert("请点击选择你想播放的音乐~");
                 });
             }
         }
 
-        function selectTrack(idx) {
-            loadTrack(idx);
+        function selectTrack(index) {
+            loadTrack(index);
             audio.play().then(() => {
-                playBtn.innerText = "⏸ 暂停";
-                vinylIcon.classList.add('playing');
+                playBtn.innerText = "❚❚";
+                albumArt.classList.add('playing');
                 isPlaying = true;
             });
         }
 
         function nextTrack() {
-            let next = (currentIdx + 1) % tracks.length;
-            selectTrack(next);
+            currentIndex = (currentIndex + 1) % playlist.length;
+            selectTrack(currentIndex);
         }
 
         function prevTrack() {
-            let prev = (currentIdx - 1 + tracks.length) % tracks.length;
-            selectTrack(prev);
+            currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+            selectTrack(currentIndex);
         }
 
-        // 初始化加载第一首
+        function updateProgress() {
+            if (audio.duration) {
+                const percent = (audio.currentTime / audio.duration) * 100;
+                progressFilled.style.width = percent + "%";
+                currentTimeEl.innerText = formatTime(audio.currentTime);
+                durationEl.innerText = formatTime(audio.duration);
+            }
+        }
+
+        function seekAudio(e) {
+            const bar = document.getElementById('progressBar');
+            const clickX = e.offsetX;
+            const width = bar.clientWidth;
+            audio.currentTime = (clickX / width) * audio.duration;
+        }
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return m + ":" + (s < 10 ? "0" : "") + s;
+        }
+
         loadTrack(0);
 
         // 自动同步历史对话
