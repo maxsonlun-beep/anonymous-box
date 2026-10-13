@@ -3,79 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>菠萝世界 - 匿名提问箱</title>
+    <title>maxsonlun · 菠萝世界复合空间</title>
     <style>
-        * { box-sizing: border-box; }
+        :root {
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --sub: #64748b;
+            --border: #e2e8f0;
+            --accent: #6366f1;
+        }
+        [data-theme="dark"] {
+            --bg: #090d16;
+            --card-bg: #111827;
+            --text: #f9fafb;
+            --sub: #9ca3af;
+            --border: #1f2937;
+            --accent: #818cf8;
+        }
+        * { box-sizing: border-box; transition: background 0.3s, color 0.3s; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg, #f3e8ff 0%, #e0e7ff 50%, #f0fdf4 100%);
-            color: #1e293b; margin: 0; padding: 20px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh;
+            background: var(--bg); color: var(--text);
+            margin: 0; padding: 20px; display: flex; justify-content: center; min-height: 100vh;
         }
-        .container { width: 100%; max-width: 480px; }
-        .card {
-            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px);
-            padding: 32px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            border: 1px solid rgba(255, 255, 255, 0.6); text-align: center;
-        }
-        .avatar { font-size: 44px; margin-bottom: 10px; }
-        h2 { margin: 0 0 8px 0; color: #0f172a; font-size: 24px; font-weight: 700; }
-        p { color: #64748b; font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
-        textarea {
-            width: 100%; height: 110px; padding: 14px; border: 1.5px solid #e2e8f0; border-radius: 14px;
-            resize: none; font-size: 14px; outline: none; background: rgba(255, 255, 255, 0.9);
-            transition: all 0.2s ease; color: #1e293b;
-        }
-        textarea:focus { border-color: #6366f1; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); background: #fff; }
-        button {
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none;
-            padding: 14px; border-radius: 14px; width: 100%; margin-top: 14px; font-size: 15px; cursor: pointer; font-weight: 600;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); transition: all 0.2s ease;
-        }
-        button:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4); }
+        .wrapper { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 16px; }
         
-        /* 聊天历史气泡区 */
-        .chat-history { text-align: left; margin-top: 24px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
-        .chat-item { margin-bottom: 16px; background: #f8fafc; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; }
-        .my-msg { background: #e0e7ff; color: #1e3a8a; padding: 10px 12px; border-radius: 10px; font-size: 13px; word-break: break-all; margin-bottom: 8px; }
-        .reply-msg { background: #ffffff; color: #0f172a; padding: 10px 12px; border-radius: 10px; font-size: 13px; border-left: 3px solid #6366f1; word-break: break-all; line-height: 1.4; }
-        .waiting-text { font-size: 12px; color: #64748b; font-style: italic; }
+        /* 顶部导航头 */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); padding: 16px 24px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+        .profile-info { display: flex; align-items: center; gap: 12px; }
+        .avatar-box { font-size: 32px; background: #e0e7ff; padding: 8px; border-radius: 14px; }
+        .profile-info h1 { font-size: 18px; margin: 0; font-weight: 700; }
+        .profile-info p { font-size: 12px; margin: 2px 0 0 0; color: var(--sub); }
+        .theme-btn { background: var(--border); border: none; padding: 8px 14px; border-radius: 12px; cursor: pointer; font-size: 13px; color: var(--text); }
+
+        /* Bento 网格布局 */
+        .bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media(max-width: 640px) { .bento-grid { grid-template-columns: 1fr; } }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border); padding: 24px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+        .card-full { grid-column: span 2; }
+        @media(max-width: 640px) { .card-full { grid-column: span 1; } }
+
+        h3 { margin: 0 0 12px 0; font-size: 16px; display: flex; align-items: center; gap: 6px; }
+        
+        /* 表单与输入框 */
+        .tags { display: flex; gap: 6px; margin-bottom: 12px; }
+        .tag-pill { background: var(--border); border: none; padding: 4px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; color: var(--sub); }
+        .tag-pill.active { background: var(--accent); color: white; }
+        textarea { width: 100%; height: 100px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); color: var(--text); resize: none; font-size: 14px; outline: none; }
+        textarea:focus { border-color: var(--accent); }
+        .submit-btn { background: var(--accent); color: white; border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+
+        /* 音乐与状态卡片组件 */
+        .status-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,197,94,0.1); color: #22c55e; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 10px; }
+        .dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        
+        .music-box { display: flex; align-items: center; gap: 12px; background: var(--bg); padding: 12px; border-radius: 12px; border: 1px solid var(--border); }
+        .vinyl { font-size: 28px; animation: spin 4s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* 对话历史展示 */
+        .chat-item { background: var(--bg); padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 10px; }
+        .my-text { font-size: 13px; color: var(--text); margin-bottom: 6px; }
+        .reply-text { font-size: 13px; color: var(--accent); border-left: 3px solid var(--accent); padding-left: 8px; }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="card">
-            <div class="avatar">🍍</div>
-            <h2>菠萝世界</h2>
-            <p>这里可以畅所欲言，有什么悄悄话或者问题，尽管写下来传达给我吧~</p>
-            
-            <form method="POST">
-                <textarea name="content" placeholder="写下你的真实想法..." required></textarea>
-                <button type="submit">匿名发送新消息</button>
-            </form>
-
-            <!-- 历史对话记录展示区 -->
-            <div id="chatHistoryArea" class="chat-history" style="display: none;">
-                <div style="font-size: 13px; font-weight: bold; color: #334155; margin-bottom: 12px;">💬 你的历史对话记录</div>
-                <div id="historyList"></div>
+<body data-theme="dark">
+    <div class="wrapper">
+        <!-- 顶栏 -->
+        <div class="top-bar">
+            <div class="profile-info">
+                <div class="avatar-box">🍍</div>
+                <div>
+                    <h1>maxsonlun</h1>
+                    <p>Electrical Engineering & Tech Hub</p>
+                </div>
             </div>
+            <button class="theme-btn" onclick="toggleTheme()">☀️ 切换主题</button>
+        </div>
+
+        <!-- Bento 复合网格 -->
+        <div class="bento-grid">
+            
+            <!-- 板块一：互动提问箱（全宽） -->
+            <div class="card card-full">
+                <h3>💌 匿名树洞与专属提问箱</h3>
+                <p style="font-size: 13px; color: var(--sub); margin-top:0;">有什么悄悄话、意见或技术交流，随时发给我，下次进入自动同步回复。</p>
+                <form method="POST">
+                    <div class="tags">
+                        <button type="button" class="tag-pill active" onclick="setTag('日常', this)">📌 日常</button>
+                        <button type="button" class="tag-pill" onclick="setTag('技术', this)">⚡ 技术</button>
+                        <button type="button" class="tag-pill" onclick="setTag('表白', this)">💖 表白</button>
+                    </div>
+                    <input type="hidden" name="tag" id="tagInput" value="日常">
+                    <textarea name="content" placeholder="写下你的真实想法..." required></textarea>
+                    <button type="submit" class="submit-btn">发送加密消息</button>
+                </form>
+
+                <!-- 历史消息展示区 -->
+                <div id="historyArea" style="margin-top: 20px; display: none;">
+                    <div style="font-size: 13px; font-weight: bold; margin-bottom: 10px;">💬 你的对话记录流</div>
+                    <div id="historyList"></div>
+                </div>
+            </div>
+
+            <!-- 板块二：个人实时状态 -->
+            <div class="card">
+                <div class="status-badge"><div class="dot"></div>系统正常运行</div>
+                <h3 style="margin-top: 5px;">⚡ 数字看板</h3>
+                <p style="font-size: 13px; color: var(--sub);">主修电气工程与自动化。热爱硬件电路、嵌入式与全栈开发。</p>
+            </div>
+
+            <!-- 板块三：音乐视听空间 -->
+            <div class="card">
+                <h3>🎵 氛围空间 (Trap/Drill)</h3>
+                <div class="music-box">
+                    <div class="vinyl">💿</div>
+                    <div>
+                        <div style="font-size: 13px; font-weight: bold;">Dark Ambient Drill 808</div>
+                        <div style="font-size: 11px; color: var(--sub);">Coding & Engineering Vibes</div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <script>
-        // 从 localStorage 读取保存的所有 token 列表
-        let tokens = JSON.parse(localStorage.getItem('pineapple_tokens') || '[]');
+        function setTag(t, btn) {
+            document.querySelectorAll('.tag-pill').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tagInput').value = t;
+        }
 
-        // 如果后端刚成功提交了一条新消息，把返回的新 token 压入数组并存回缓存
+        function toggleTheme() {
+            const body = document.body;
+            const theme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+        if (localStorage.getItem('theme')) {
+            document.body.setAttribute('data-theme', localStorage.getItem('theme'));
+        }
+
+        // 自动同步历史对话
+        let tokens = JSON.parse(localStorage.getItem('pineapple_tokens') || '[]');
         {% if new_token %}
-            let newToken = "{{ new_token }}";
-            if (!tokens.includes(newToken)) {
-                tokens.push(newToken);
+            let nt = "{{ new_token }}";
+            if (!tokens.includes(nt)) {
+                tokens.push(nt);
                 localStorage.setItem('pineapple_tokens', JSON.stringify(tokens));
             }
         {% endif %}
 
-        // 如果本地有记录，异步向服务器请求这些消息的内容和回复
         if (tokens.length > 0) {
             fetch('/check_history', {
                 method: 'POST',
@@ -85,19 +167,206 @@
             .then(res => res.json())
             .then(data => {
                 if (data.history && data.history.length > 0) {
-                    document.getElementById('chatHistoryArea').style.display = 'block';
-                    let html = '';
+                    document.getElementById('historyArea').style.display = 'block';
+                    let h = '';
                     data.history.forEach(item => {
-                        html += `<div class="chat-item">
-                            <div class="my-msg"><b>你：</b>${item.content}</div>`;
+                        h += `<div class="chat-item">
+                            <div class="my-text"><b>[${item.tag}] 你：</b>${item.content}</div>`;
                         if (item.reply && item.reply.trim() !== '') {
-                            html += `<div class="reply-msg"><b>🍍 菠萝回复：</b>${item.reply}</div>`;
+                            h += `<div class="reply-text"><b>菠萝回复：</b>${item.reply}</div>`;
                         } else {
-                            html += `<div class="waiting-text">⏳ 正在等待菠萝回复...</div>`;
+                            h += `<div style="font-size: 12px; color: var(--sub); font-style: italic;">⏳ 等待菠萝回复中...</div>`;
                         }
-                        html += `</div>`;
+                        h += `</div>`;
                     });
-                    document.getElementById('historyList').innerHTML = html;
+                    document.getElementById('historyList').innerHTML = h;
+                }
+            });
+        }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>maxsonlun · 菠萝世界复合空间</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --sub: #64748b;
+            --border: #e2e8f0;
+            --accent: #6366f1;
+        }
+        [data-theme="dark"] {
+            --bg: #090d16;
+            --card-bg: #111827;
+            --text: #f9fafb;
+            --sub: #9ca3af;
+            --border: #1f2937;
+            --accent: #818cf8;
+        }
+        * { box-sizing: border-box; transition: background 0.3s, color 0.3s; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg); color: var(--text);
+            margin: 0; padding: 20px; display: flex; justify-content: center; min-height: 100vh;
+        }
+        .wrapper { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 16px; }
+        
+        /* 顶部导航头 */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); padding: 16px 24px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+        .profile-info { display: flex; align-items: center; gap: 12px; }
+        .avatar-box { font-size: 32px; background: #e0e7ff; padding: 8px; border-radius: 14px; }
+        .profile-info h1 { font-size: 18px; margin: 0; font-weight: 700; }
+        .profile-info p { font-size: 12px; margin: 2px 0 0 0; color: var(--sub); }
+        .theme-btn { background: var(--border); border: none; padding: 8px 14px; border-radius: 12px; cursor: pointer; font-size: 13px; color: var(--text); }
+
+        /* Bento 网格布局 */
+        .bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media(max-width: 640px) { .bento-grid { grid-template-columns: 1fr; } }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border); padding: 24px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+        .card-full { grid-column: span 2; }
+        @media(max-width: 640px) { .card-full { grid-column: span 1; } }
+
+        h3 { margin: 0 0 12px 0; font-size: 16px; display: flex; align-items: center; gap: 6px; }
+        
+        /* 表单与输入框 */
+        .tags { display: flex; gap: 6px; margin-bottom: 12px; }
+        .tag-pill { background: var(--border); border: none; padding: 4px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; color: var(--sub); }
+        .tag-pill.active { background: var(--accent); color: white; }
+        textarea { width: 100%; height: 100px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); color: var(--text); resize: none; font-size: 14px; outline: none; }
+        textarea:focus { border-color: var(--accent); }
+        .submit-btn { background: var(--accent); color: white; border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+
+        /* 音乐与状态卡片组件 */
+        .status-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,197,94,0.1); color: #22c55e; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 10px; }
+        .dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        
+        .music-box { display: flex; align-items: center; gap: 12px; background: var(--bg); padding: 12px; border-radius: 12px; border: 1px solid var(--border); }
+        .vinyl { font-size: 28px; animation: spin 4s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* 对话历史展示 */
+        .chat-item { background: var(--bg); padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 10px; }
+        .my-text { font-size: 13px; color: var(--text); margin-bottom: 6px; }
+        .reply-text { font-size: 13px; color: var(--accent); border-left: 3px solid var(--accent); padding-left: 8px; }
+    </style>
+</head>
+<body data-theme="dark">
+    <div class="wrapper">
+        <!-- 顶栏 -->
+        <div class="top-bar">
+            <div class="profile-info">
+                <div class="avatar-box">🍍</div>
+                <div>
+                    <h1>maxsonlun</h1>
+                    <p>Electrical Engineering & Tech Hub</p>
+                </div>
+            </div>
+            <button class="theme-btn" onclick="toggleTheme()">☀️ 切换主题</button>
+        </div>
+
+        <!-- Bento 复合网格 -->
+        <div class="bento-grid">
+            
+            <!-- 板块一：互动提问箱（全宽） -->
+            <div class="card card-full">
+                <h3>💌 匿名树洞与专属提问箱</h3>
+                <p style="font-size: 13px; color: var(--sub); margin-top:0;">有什么悄悄话、意见或技术交流，随时发给我，下次进入自动同步回复。</p>
+                <form method="POST">
+                    <div class="tags">
+                        <button type="button" class="tag-pill active" onclick="setTag('日常', this)">📌 日常</button>
+                        <button type="button" class="tag-pill" onclick="setTag('技术', this)">⚡ 技术</button>
+                        <button type="button" class="tag-pill" onclick="setTag('表白', this)">💖 表白</button>
+                    </div>
+                    <input type="hidden" name="tag" id="tagInput" value="日常">
+                    <textarea name="content" placeholder="写下你的真实想法..." required></textarea>
+                    <button type="submit" class="submit-btn">发送加密消息</button>
+                </form>
+
+                <!-- 历史消息展示区 -->
+                <div id="historyArea" style="margin-top: 20px; display: none;">
+                    <div style="font-size: 13px; font-weight: bold; margin-bottom: 10px;">💬 你的对话记录流</div>
+                    <div id="historyList"></div>
+                </div>
+            </div>
+
+            <!-- 板块二：个人实时状态 -->
+            <div class="card">
+                <div class="status-badge"><div class="dot"></div>系统正常运行</div>
+                <h3 style="margin-top: 5px;">⚡ 数字看板</h3>
+                <p style="font-size: 13px; color: var(--sub);">主修电气工程与自动化。热爱硬件电路、嵌入式与全栈开发。</p>
+            </div>
+
+            <!-- 板块三：音乐视听空间 -->
+            <div class="card">
+                <h3>🎵 氛围空间 (Trap/Drill)</h3>
+                <div class="music-box">
+                    <div class="vinyl">💿</div>
+                    <div>
+                        <div style="font-size: 13px; font-weight: bold;">Dark Ambient Drill 808</div>
+                        <div style="font-size: 11px; color: var(--sub);">Coding & Engineering Vibes</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function setTag(t, btn) {
+            document.querySelectorAll('.tag-pill').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tagInput').value = t;
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const theme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+        if (localStorage.getItem('theme')) {
+            document.body.setAttribute('data-theme', localStorage.getItem('theme'));
+        }
+
+        // 自动同步历史对话
+        let tokens = JSON.parse(localStorage.getItem('pineapple_tokens') || '[]');
+        {% if new_token %}
+            let nt = "{{ new_token }}";
+            if (!tokens.includes(nt)) {
+                tokens.push(nt);
+                localStorage.setItem('pineapple_tokens', JSON.stringify(tokens));
+            }
+        {% endif %}
+
+        if (tokens.length > 0) {
+            fetch('/check_history', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tokens: tokens })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.history && data.history.length > 0) {
+                    document.getElementById('historyArea').style.display = 'block';
+                    let h = '';
+                    data.history.forEach(item => {
+                        h += `<div class="chat-item">
+                            <div class="my-text"><b>[${item.tag}] 你：</b>${item.content}</div>`;
+                        if (item.reply && item.reply.trim() !== '') {
+                            h += `<div class="reply-text"><b>菠萝回复：</b>${item.reply}</div>`;
+                        } else {
+                            h += `<div style="font-size: 12px; color: var(--sub); font-style: italic;">⏳ 等待菠萝回复中...</div>`;
+                        }
+                        h += `</div>`;
+                    });
+                    document.getElementById('historyList').innerHTML = h;
                 }
             });
         }
