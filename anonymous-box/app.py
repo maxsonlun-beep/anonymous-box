@@ -21,6 +21,7 @@ class Message(db.Model):
     token = db.Column(db.String(32), unique=True, nullable=False)
     content = db.Column(db.Text, nullable=False)
     tag = db.Column(db.String(20), default='日常')
+    is_public = db.Column(db.Boolean, default=True)  # 是否公开到广场
     ip = db.Column(db.String(50), default='未知')
     location = db.Column(db.String(100), default='未知城市')
     reply = db.Column(db.Text, default='')
@@ -52,6 +53,7 @@ def index():
     if request.method == 'POST':
         content = request.form.get('content')
         tag = request.form.get('tag', '日常')
+        is_public = True if request.form.get('is_public') == 'on' else False
         
         if content and content.strip():
             if request.headers.get('CF-Connecting-IP'):
@@ -68,6 +70,7 @@ def index():
                 token=token,
                 content=content.strip(),
                 tag=tag,
+                is_public=is_public,
                 ip=ip,
                 location=location,
                 reply=''
@@ -76,7 +79,9 @@ def index():
             db.session.commit()
             new_token = token
 
-    return render_template('index.html', new_token=new_token)
+    # 获取所有公开的留言展示在广场上
+    public_messages = Message.query.filter_by(is_public=True).order_by(Message.created_at.desc()).all()
+    return render_template('index.html', new_token=new_token, public_messages=public_messages)
 
 @app.route('/check_history', methods=['POST'])
 def check_history():
@@ -95,7 +100,8 @@ def check_history():
             user_history.append({
                 "content": m.content,
                 "tag": m.tag,
-                "reply": m.reply or ''
+                "reply": m.reply or '',
+                "is_public": m.is_public
             })
     return jsonify({"history": user_history})
 
@@ -132,6 +138,7 @@ def admin():
             db.session.commit()
         return redirect(url_for('admin'))
 
+    # 后台可以看到所有的消息（无论是公开的还是私密的）
     messages = Message.query.order_by(Message.created_at.desc()).all()
     return render_template('admin.html', messages=messages)
 
