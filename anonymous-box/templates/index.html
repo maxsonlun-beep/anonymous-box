@@ -23,7 +23,6 @@
         }
         * { box-sizing: border-box; transition: background 0.3s, color 0.3s; }
         
-        /* 动态氛围感极光背景 */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg);
@@ -49,7 +48,6 @@
 
         .wrapper { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 16px; z-index: 1; }
         
-        /* 顶栏 */
         .top-bar { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); backdrop-filter: blur(12px); padding: 16px 24px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.05); }
         .profile-info { display: flex; align-items: center; gap: 12px; }
         .avatar-box { font-size: 32px; background: rgba(99, 102, 241, 0.1); padding: 8px; border-radius: 14px; }
@@ -57,7 +55,6 @@
         .profile-info p { font-size: 12px; margin: 2px 0 0 0; color: var(--sub); }
         .theme-btn { background: var(--border); border: none; padding: 8px 14px; border-radius: 12px; cursor: pointer; font-size: 13px; color: var(--text); }
 
-        /* Bento 网格布局 */
         .bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         @media(max-width: 640px) { .bento-grid { grid-template-columns: 1fr; } }
 
@@ -67,7 +64,6 @@
 
         h3 { margin: 0 0 12px 0; font-size: 16px; display: flex; align-items: center; gap: 6px; }
         
-        /* 表单与输入框 */
         .tags { display: flex; gap: 6px; margin-bottom: 12px; }
         .tag-pill { background: rgba(100, 116, 139, 0.1); border: none; padding: 4px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; color: var(--sub); }
         .tag-pill.active { background: var(--accent); color: white; }
@@ -75,16 +71,27 @@
         textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
         .submit-btn { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
 
-        /* 音乐与状态卡片组件 */
         .status-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,197,94,0.1); color: #22c55e; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 10px; }
         .dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
         
-        .music-box { display: flex; align-items: center; gap: 12px; background: rgba(100, 116, 139, 0.05); padding: 12px; border-radius: 12px; border: 1px solid var(--border); }
-        .vinyl { font-size: 28px; animation: spin 4s linear infinite; }
+        /* 进阶多功能音乐播放器 */
+        .player-box { background: rgba(100, 116, 139, 0.05); padding: 14px; border-radius: 14px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
+        .player-info { display: flex; align-items: center; gap: 12px; }
+        .vinyl { font-size: 32px; display: inline-block; }
+        .vinyl.playing { animation: spin 3s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
+        
+        .controls { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+        .ctrl-btn { background: var(--border); border: none; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; color: var(--text); font-weight: 600; }
+        .ctrl-btn.main { background: var(--accent); color: white; }
+        
+        /* 音乐选择列表 */
+        .playlist { display: flex; flex-direction: column; gap: 4px; max-height: 100px; overflow-y: auto; margin-top: 4px; }
+        .track-item { font-size: 11px; padding: 6px 10px; border-radius: 6px; background: rgba(255,255,255,0.03); cursor: pointer; color: var(--sub); display: flex; justify-content: space-between; }
+        .track-item:hover { background: rgba(99,102,241,0.1); color: var(--text); }
+        .track-item.active { background: var(--accent); color: white; font-weight: 600; }
 
-        /* 对话历史展示 */
         .chat-item { background: rgba(100, 116, 139, 0.05); padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 10px; }
         .my-text { font-size: 13px; color: var(--text); margin-bottom: 6px; }
         .reply-text { font-size: 13px; color: var(--accent); border-left: 3px solid var(--accent); padding-left: 8px; }
@@ -107,7 +114,7 @@
         <!-- Bento 复合网格 -->
         <div class="bento-grid">
             
-            <!-- 板块一：互动提问箱（全宽） -->
+            <!-- 板块一：互动提问箱 -->
             <div class="card card-full">
                 <h3>💌 匿名树洞与专属提问箱</h3>
                 <p style="font-size: 13px; color: var(--sub); margin-top:0;">有什么悄悄话、意见或技术交流，随时发给我，下次进入自动同步回复。</p>
@@ -122,7 +129,6 @@
                     <button type="submit" class="submit-btn">发送加密消息</button>
                 </form>
 
-                <!-- 历史消息展示区 -->
                 <div id="historyArea" style="margin-top: 20px; display: none;">
                     <div style="font-size: 13px; font-weight: bold; margin-bottom: 10px;">💬 你的对话记录流</div>
                     <div id="historyList"></div>
@@ -136,16 +142,34 @@
                 <p style="font-size: 13px; color: var(--sub);">主修电气工程与自动化。热爱硬件电路、嵌入式与全栈开发。</p>
             </div>
 
-            <!-- 板块三：音乐视听空间 -->
+            <!-- 板块三：自由选歌多功能音乐播放器 -->
             <div class="card">
-                <h3>🎵 氛围空间 (Trap/Drill)</h3>
-                <div class="music-box">
-                    <div class="vinyl">💿</div>
-                    <div>
-                        <div style="font-size: 13px; font-weight: bold;">Dark Ambient Drill 808</div>
-                        <div style="font-size: 11px; color: var(--sub);">Coding & Engineering Vibes</div>
+                <h3>🎵 氛围音乐中心</h3>
+                <div class="player-box">
+                    <div class="player-info">
+                        <div class="vinyl" id="vinylIcon">💿</div>
+                        <div>
+                            <div style="font-size: 13px; font-weight: bold;" id="currentTitle">Dark Ambient Drill 808</div>
+                            <div style="font-size: 11px; color: var(--sub);" id="currentArtist">Coding & Vibes</div>
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button class="ctrl-btn" onclick="prevTrack()">⏮ 上一首</button>
+                        <button class="ctrl-btn main" id="playBtn" onclick="togglePlay()">▶ 播放</button>
+                        <button class="ctrl-btn" onclick="nextTrack()">下一首 ⏭</button>
+                    </div>
+
+                    <!-- 自由选择播放列表 -->
+                    <div class="playlist" id="playlist">
+                        <div class="track-item active" onclick="selectTrack(0)">1. Dark Ambient Drill 808</div>
+                        <div class="track-item" onclick="selectTrack(1)">2. Lo-Fi Study Coding Beats</div>
+                        <div class="track-item" onclick="selectTrack(2)">3. Cyberpunk Night Chill</div>
                     </div>
                 </div>
+                
+                <!-- 音频源定义 -->
+                <audio id="audioPlayer"></audio>
             </div>
 
         </div>
@@ -167,6 +191,77 @@
         if (localStorage.getItem('theme')) {
             document.body.setAttribute('data-theme', localStorage.getItem('theme'));
         }
+
+        // 音乐播放器逻辑
+        const tracks = [
+            { title: "Dark Ambient Drill 808", artist: "Coding & Vibes", src: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf7f6.mp3?filename=lofi-study-112191.mp3" },
+            { title: "Lo-Fi Study Coding Beats", artist: "Relax & Focus", src: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=chill-abstract-intention-12099.mp3" },
+            { title: "Cyberpunk Night Chill", artist: "Electronic Space", src: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=science-fiction-10498.mp3" }
+        ];
+
+        let currentIdx = 0;
+        const audio = document.getElementById('audioPlayer');
+        const playBtn = document.getElementById('playBtn');
+        const vinylIcon = document.getElementById('vinylIcon');
+        const currentTitle = document.getElementById('currentTitle');
+        const currentArtist = document.getElementById('currentArtist');
+        let isPlaying = false;
+
+        function loadTrack(idx) {
+            currentIdx = idx;
+            audio.src = tracks[idx].src;
+            currentTitle.innerText = tracks[idx].title;
+            currentArtist.innerText = tracks[idx].artist;
+            
+            // 更新歌单高亮
+            const items = document.querySelectorAll('.track-item');
+            items.forEach((item, i) => {
+                if(i === idx) item.classList.add('active');
+                else item.classList.remove('active');
+            });
+        }
+
+        function togglePlay() {
+            if (!audio.src) {
+                loadTrack(currentIdx);
+            }
+            if (isPlaying) {
+                audio.pause();
+                playBtn.innerText = "▶ 播放";
+                vinylIcon.classList.remove('playing');
+                isPlaying = false;
+            } else {
+                audio.play().then(() => {
+                    playBtn.innerText = "⏸ 暂停";
+                    vinylIcon.classList.add('playing');
+                    isPlaying = true;
+                }).catch(e => {
+                    alert("请点击选择你想播放的音乐~");
+                });
+            }
+        }
+
+        function selectTrack(idx) {
+            loadTrack(idx);
+            audio.play().then(() => {
+                playBtn.innerText = "⏸ 暂停";
+                vinylIcon.classList.add('playing');
+                isPlaying = true;
+            });
+        }
+
+        function nextTrack() {
+            let next = (currentIdx + 1) % tracks.length;
+            selectTrack(next);
+        }
+
+        function prevTrack() {
+            let prev = (currentIdx - 1 + tracks.length) % tracks.length;
+            selectTrack(prev);
+        }
+
+        // 初始化加载第一首
+        loadTrack(0);
 
         // 自动同步历史对话
         let tokens = JSON.parse(localStorage.getItem('pineapple_tokens') || '[]');
