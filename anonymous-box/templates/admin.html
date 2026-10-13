@@ -5,42 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>管理后台 - 菠萝世界</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #1e293b; padding: 20px; max-width: 650px; margin: auto; }
-        h2 { color: #0f172a; }
-        .msg-card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
-        .msg-header { display: flex; justify-content: space-between; font-size: 12px; color: #64748b; margin-bottom: 8px; background: #f1f5f9; padding: 6px 10px; border-radius: 6px; }
-        .msg-content { font-size: 15px; color: #1e293b; margin-bottom: 12px; word-break: break-all; font-weight: 500; }
-        textarea { width: 100%; height: 70px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 13px; outline: none; resize: none; margin-bottom: 8px; }
-        textarea:focus { border-color: #6366f1; }
-        button { background: #6366f1; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: 500; }
-        button:hover { background: #4f46e5; }
-        .existing-reply { background: #eff6ff; border-left: 3px solid #3b82f6; padding: 8px 12px; border-radius: 6px; font-size: 13px; color: #1e40af; margin-bottom: 8px; }
+        body { font-family: -apple-system, sans-serif; background: #0f172a; color: #f8fafc; padding: 30px 20px; max-width: 700px; margin: auto; }
+        .card { background: #1e293b; padding: 20px; border-radius: 16px; margin-bottom: 16px; border: 1px solid #334155; }
+        .meta { font-size: 12px; color: #94a3b8; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .content { font-size: 15px; margin-bottom: 12px; word-break: break-all; }
+        textarea { width: 100%; height: 70px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 8px; padding: 8px; resize: none; margin-bottom: 8px; }
+        button { background: #6366f1; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .reply-box { background: #0f172a; border-left: 3px solid #3b82f6; padding: 8px 12px; border-radius: 6px; font-size: 13px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
-    <h2>📥 菠萝的秘密收件箱（共 {{ messages | length }} 条）</h2>
-    <hr style="border: none; border-top: 1px solid #e2e8f0; margin-bottom: 20px;">
+    <h2>🍍 菠萝世界复合空间 · 统一后台</h2>
+    <hr style="border:0; border-top:1px solid #334155; margin-bottom: 20px;">
     
     {% for msg in messages %}
-    <div class="msg-card">
-        <div class="msg-header">
-            <span>📍 归属地：<b>{{ msg.location or '未知城市' }}</b></span>
-            <span>🌐 IP：{{ msg.ip or '未知' }}</span>
+    <div class="card">
+        <div class="meta">
+            <span>📍 {{ msg.location }} (IP: {{ msg.ip }})</span>
+            <span>🕒 {{ msg.created_at }}</span>
         </div>
-        <div class="msg-content">📩 <b>留言：</b>{{ msg.content }}</div>
+        <div class="content"><b>[{{ msg.tag }}]</b> {{ msg.content }}</div>
         
         {% if msg.reply %}
-        <div class="existing-reply">当前回复：{{ msg.reply }}</div>
+        <div class="reply-box"><b>当前回复：</b>{{ msg.reply }}</div>
         {% endif %}
 
         <form method="POST">
             <input type="hidden" name="msg_id" value="{{ msg.id }}">
-            <textarea name="reply" placeholder="输入你想回复的内容（仅在后台管理可见或后续扩展）..."></textarea>
-            <button type="submit">保存回复</button>
+            <textarea name="reply" placeholder="写下你的回复..."></textarea>
+            <button type="submit">提交回复</button>
         </form>
     </div>
     {% else %}
-    <p style="color: #94a3b8; text-align: center; margin-top: 50px;">暂时还没有收到任何留言哦~</p>
+    <p style="text-align: center; color: #94a3b8; margin-top: 50px;">还没有收到任何消息哦~</p>
     {% endfor %}
 </body>
 </html>
