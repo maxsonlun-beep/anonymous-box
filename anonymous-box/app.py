@@ -21,7 +21,7 @@ class Message(db.Model):
     token = db.Column(db.String(32), unique=True, nullable=False)
     content = db.Column(db.Text, nullable=False)
     tag = db.Column(db.String(20), default='日常')
-    is_public = db.Column(db.Boolean, default=True)  # 是否公开到广场
+    msg_type = db.Column(db.String(20), default='private')  # 'private' 为专属提问, 'forum' 为论坛建议
     ip = db.Column(db.String(50), default='未知')
     location = db.Column(db.String(100), default='未知城市')
     reply = db.Column(db.Text, default='')
@@ -53,7 +53,7 @@ def index():
     if request.method == 'POST':
         content = request.form.get('content')
         tag = request.form.get('tag', '日常')
-        is_public = True if request.form.get('is_public') == 'on' else False
+        msg_type = request.form.get('msg_type', 'private') # 'private' 专属提问 / 'forum' 论坛
         
         if content and content.strip():
             if request.headers.get('CF-Connecting-IP'):
@@ -70,18 +70,19 @@ def index():
                 token=token,
                 content=content.strip(),
                 tag=tag,
-                is_public=is_public,
+                msg_type=msg_type,
                 ip=ip,
                 location=location,
                 reply=''
             )
             db.session.add(new_msg)
             db.session.commit()
-            new_token = token
+            if msg_type == 'private':
+                new_token = token
 
-    # 获取所有公开的留言展示在广场上
-    public_messages = Message.query.filter_by(is_public=True).order_by(Message.created_at.desc()).all()
-    return render_template('index.html', new_token=new_token, public_messages=public_messages)
+    # 论坛留言公开可见（不显示IP），专属提问不在此展示
+    public_forum = Message.query.filter_by(msg_type='forum').order_by(Message.created_at.desc()).all()
+    return render_template('index.html', new_token=new_token, public_forum=public_forum)
 
 @app.route('/check_history', methods=['POST'])
 def check_history():
@@ -97,12 +98,12 @@ def check_history():
     for t in tokens:
         if t in msg_map:
             m = msg_map[t]
-            user_history.append({
-                "content": m.content,
-                "tag": m.tag,
-                "reply": m.reply or '',
-                "is_public": m.is_public
-            })
+            if m.msg_type == 'private': # 只同步专属提问的历史
+                user_history.append({
+                    "content": m.content,
+                    "tag": m.tag,
+                    "reply": m.reply or ''
+                })
     return jsonify({"history": user_history})
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -138,7 +139,7 @@ def admin():
             db.session.commit()
         return redirect(url_for('admin'))
 
-    # 后台可以看到所有的消息（无论是公开的还是私密的）
+    # 后台可以看到所有的消息（无论是专属提问还是论坛建议，且完整显示IP）
     messages = Message.query.order_by(Message.created_at.desc()).all()
     return render_template('admin.html', messages=messages)
 
